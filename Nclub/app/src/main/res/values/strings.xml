@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">BottomNavigation Demo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_map_api_key">AIzaSyDaCOKNysWAqY33mLl65nexqvZB5fOKsso</string>
+    <string name="back"><![CDATA[<-]]></string>
+    <string name="forward"><![CDATA[->]]></string>
+    <string-array name="categories">
+        <item>休閒娛樂</item>
+        <item>運動</item>
+        <item>車聚</item>
+        <item>旅遊</item>
+        <item>美食</item>
+        <item>寵物</item>
+        <item>學習</item>
+    </string-array>
+
+    //leisure_tags
+    <string-array name="leisure_tags">
+        <item>演唱會</item>
+        <item>音樂會</item>
+        <item>電影</item>
+        <item>電競</item>
+        <item>動漫</item>
+    </string-array>
+
+    //sports_tags
+    <string-array name="sports_tags">
+        <item>跑步</item>
+        <item>游泳</item>
+        <item>籃球</item>
+        <item>溜冰</item>
+        <item>足球</item>
+    </string-array>
+
+    //car_meet_tags
+    <string-array name="car_meet_tags">
+        <item>跑山</item>
+        <item>汽車</item>
+        <item>機車</item>
+        <item>騎車環島</item>
+    </string-array>
+
+    //travel_tags
+    <string-array name="travel_tags">
+        <item>國內</item>
+        <item>國外</item>
+        <item>住宿</item>
+        <item>一日遊</item>
+    </string-array>
+
+    //food_tags
+    <string-array name="food_tags">
+        <item>小吃</item>
+        <item>夜市</item>
+        <item>餐廳</item>
+        <item>西式</item>
+        <item>日式</item>
+        <item>美式</item>
+    </string-array>
+
+    //pet_pet_tags
+    <string-array name="pet_tags">
+        <item>貓咪</item>
+        <item>狗狗</item>
+        <item>小鳥</item>
+        <item>魚</item>
+        <item>爬蟲類</item>
+    </string-array>
+
+    //learning_tags
+    <string-array name="learning_tags">
+        <item>國小</item>
+        <item>國中</item>
+        <item>高中</item>
+        <item>大學</item>
+        <item>備考</item>
+
+
+    </string-array>
+
+    <string name="event_image">Event Image</string>
+</resources>
+

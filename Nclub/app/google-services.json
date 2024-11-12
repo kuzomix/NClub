@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "77634492358",
+    "firebase_url": "https://nclub-a408e-default-rtdb.firebaseio.com",
+    "project_id": "nclub-a408e",
+    "storage_bucket": "nclub-a408e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77634492358:android:21bd9150bc124bb036c4c7",
+        "android_client_info": {
+          "package_name": "com.example.bottom_main"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfnvYp6eWtEOuTLeCU6SvHg9iffX7Lh58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
