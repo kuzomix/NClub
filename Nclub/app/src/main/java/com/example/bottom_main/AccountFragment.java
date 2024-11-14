@@ -1,35 +1,34 @@
 package com.example.bottom_main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.bottom_main.databinding.FragmentAccountBinding;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.FirebaseDatabase;
-
 
 public class AccountFragment extends Fragment {
 
-    private TextView usernameTextView;
     private FragmentAccountBinding binding;
-    private FirebaseDatabase database;
-
+    private String userId;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentAccountBinding.inflate(inflater, container, false);
@@ -37,14 +36,19 @@ public class AccountFragment extends Fragment {
 
         ImageView accountBack = view.findViewById(R.id.account_back);
 
+        // 獲取傳遞的參數
         Bundle bundle = getArguments();
         if (bundle != null) {
             String name1 = bundle.getString("name");
+            userId = bundle.getString("userId");
+            Log.e("AccountFragment", "name: " + name1);
+            Log.e("AccountFragment", "userId: " + userId);
+
             TextView usernameTextView1 = view.findViewById(R.id.username_text_view);
-            usernameTextView1.setText(name1);  // 在這裡設定 name
+            usernameTextView1.setText(name1);  // 設定用戶名
         }
 
-        // Return to home screen on back button click
+        // 返回主頁面
         accountBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,23 +67,63 @@ public class AccountFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setFabVisibility(View.GONE); // 隱藏 FAB
+        }
+    }
+
     // 個人資料功能的初始化
     private void initEditProfileActivityFunctionality() {
-        // 設定通知按鈕的點擊事件
-        ImageView set = binding.accountset; // 假設你在布局中有一個 ID 為 imageView 的 ImageView
+        ImageView set = binding.accountset; // 假設你在布局中有一個 ID 為 accountset 的 ImageView
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
-                startActivity(intent); // 跳轉至 EditProfileActivity
+                // 獲取用戶名
+//                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+//                String userName = sharedPreferences.getString("username", null); // 假設用戶名是用戶 ID
+                Log.e("AccountFragment", "userId: " + userId);
+
+                if (userId != null) {
+                    // 從資料庫獲取用戶資料
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                // 假設資料庫中有 name 和 email 欄位
+                                String name = dataSnapshot.child("name").getValue(String.class);
+                                String email = dataSnapshot.child("email").getValue(String.class);
+
+                                // 將資料傳遞到 EditProfileActivity
+                                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                                intent.putExtra("name", name);
+                                intent.putExtra("email", email);
+                                startActivity(intent); // 跳轉至 EditProfileActivity
+                            } else {
+                                Toast.makeText(getActivity(), "用戶資料不存在", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getActivity(), "資料獲取失敗: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(getActivity(), "用戶未登入", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
+
     // 好友列表功能的初始化
     private void initFriendActivityFunctionality() {
-        // 設定通知按鈕的點擊事件
-        ImageView friend = binding.imageView5; // 假設你在布局中有一個 ID 為 imageView 的 ImageView
-        friend .setOnClickListener(new View.OnClickListener() {
+        ImageView friend = binding.imageView5; // 假設你在布局中有一個 ID 為 imageView5 的 ImageView
+        friend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), FriendActivity.class);
@@ -87,13 +131,20 @@ public class AccountFragment extends Fragment {
             }
         });
     }
-    // 好友列表功能的初始化
+
+    // 登出功能的初始化
     private void initLogoutFunctionality() {
-        // 設定通知按鈕的點擊事件
         TextView logout = binding.textView6; // 假設你在布局中有一個 ID 為 textView6 的 TextView
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 儲存帳號和密碼
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("username", ""); // 清除帳號
+                editor.putString("password", ""); // 清除密碼
+                editor.apply();
+
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent); // 跳轉至 LoginActivity
             }

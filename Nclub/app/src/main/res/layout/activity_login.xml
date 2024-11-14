@@ -34,8 +34,6 @@
                 android:textStyle="bold"
                 android:textColor="@color/lavender"/>
 
-
-
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -69,18 +67,18 @@
                 android:textSize="18sp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/lavender"
-                app:cornerRadius = "20dp"/>
+                app:cornerRadius="20dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/singupRedirectText"
-                android:text="還沒有註冊? 註冊"
-                android:layout_gravity="center"
-                android:padding="8dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/lavender"
-                android:textSize="18sp"/>
+                android:id="@+id/signupRedirectText"
+            android:text="還沒有註冊? 註冊"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/lavender"
+            android:textSize="18sp"/>
 
         </LinearLayout>
 

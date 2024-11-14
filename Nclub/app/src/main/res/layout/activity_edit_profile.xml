@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- 用戶信息框框 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,24 +94,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="保存"
-                    android:background="@color/purple_500"
-                    android:textColor="@android:color/white"
-                    android:padding="15dp"
                     android:layout_marginTop="20dp" />
             </LinearLayout>
-
-            <!-- 登出按鈕 -->
-            <Button
-                android:id="@+id/profileback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="返回"
-                android:background="@color/red"
-                android:textColor="@android:color/white"
-                android:padding="15dp"
-                android:layout_marginTop="20dp" />
-
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

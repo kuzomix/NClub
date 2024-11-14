@@ -17,4 +17,12 @@ public class CalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setFabVisibility(View.GONE); // 隱藏 FAB
+        }
+    }
 }

@@ -82,6 +82,14 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setFabVisibility(View.VISIBLE); // 顯示 FAB
+        }
+    }
+
     // 通知功能的初始化
     private void initNotifyFunctionality() {
         // 設定通知按鈕的點擊事件

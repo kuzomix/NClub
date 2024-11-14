@@ -1,6 +1,7 @@
 package com.example.bottom_main;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText loginUsername, loginPassword;
     Button loginButton;
     TextView signupRedirectText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,22 +34,39 @@ public class LoginActivity extends AppCompatActivity {
 
         loginUsername = findViewById(R.id.login_username);
         loginPassword = findViewById(R.id.login_password);
-        signupRedirectText = findViewById(R.id.singupRedirectText);
+        signupRedirectText = findViewById(R.id.signupRedirectText);
         loginButton = findViewById(R.id.login_button);
+//        // 檢查 SharedPreferences 中的登入狀態
+//        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+//        String savedUsername = sharedPreferences.getString("username", null);
+//        String savedPassword = sharedPreferences.getString("password", null);
+//
+//        if (savedUsername != null && savedPassword != null) {
+//            // 如果有儲存的帳號和密碼，直接進入主畫面
+//            Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+//            startActivity(intent);
+//            finish(); // 結束歡迎畫面
+//        } else {
+        // 讀取儲存的帳號和密碼
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String savedUsername = sharedPreferences.getString("username", "");
+        String savedPassword = sharedPreferences.getString("password", "");
+        if (savedUsername != null && savedPassword != null) {
+            // 如果有儲存的帳號和密碼，直接帶入帳密登入
+            loginUsername.setText(savedUsername);
+            loginPassword.setText(savedPassword);
+        }
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!validateUsername() | !validatePassword())
-                {
+                if (!validateUsername() || !validatePassword()) {
                     Toast.makeText(LoginActivity.this, "请检查用户名和密码", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                } else {
                     checkUser();
                 }
             }
         });
-
 
         signupRedirectText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,9 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkUser() {
         String userUsername = loginUsername.getText().toString().trim();
-        Log.d("Debug", "LOGIN loginPassword: " + loginPassword.getText().toString());
-        String userPassword = HashUtil.hashPassword(loginPassword.getText().toString()); // 哈希输入的密码
-        Log.d("Debug", "LOGIN userPassword: " + userPassword);
+        String userPassword = HashUtil.hashPassword(loginPassword.getText().toString());
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
         Query checkUserDatabase = reference.orderByChild("username").equalTo(userUsername);
@@ -94,26 +111,29 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                        String usernameFromDB = userSnapshot.child("username").getValue(String.class);
-                        if (usernameFromDB != null && usernameFromDB.equals(userUsername)) {
-                            String passwordFromDB = userSnapshot.child("password").getValue(String.class);
-                            Log.d("Debug", "LOGIN passwordFromDB: " + passwordFromDB);
+                        String passwordFromDB = userSnapshot.child("password").getValue(String.class);
 
-                            if (passwordFromDB != null && passwordFromDB.equals(userPassword)) {
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.putExtra("username", userUsername);
-                                intent.putExtra("email", userSnapshot.child("email").getValue(String.class));
-                                intent.putExtra("userId", userSnapshot.child("userId").getValue(String.class));
-                                startActivity(intent);
-                            } else {
-                                loginPassword.setError("您輸入的密碼錯誤!");
-                                loginPassword.requestFocus();
-                            }
-                            return; // 找到用戶後退出循環
+                        if (passwordFromDB != null && passwordFromDB.equals(userPassword)) {
+                            // 儲存帳號和密碼
+                            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("username", userUsername);
+                            editor.putString("password", loginPassword.getText().toString()); // 儲存密碼
+                            editor.apply();
+
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("username", userUsername);
+                            intent.putExtra("email", userSnapshot.child("email").getValue(String.class));
+                            intent.putExtra("userId", userSnapshot.child("userId").getValue(String.class));
+                            startActivity(intent);
+                            finish();
+                            return;
+                        } else {
+                            loginPassword.setError("您輸入的密碼錯誤!");
+                            loginPassword.requestFocus();
+                            return;
                         }
                     }
-                    loginUsername.setError("使用者名稱不存在");
-                    loginUsername.requestFocus();
                 } else {
                     loginUsername.setError("使用者名稱不存在");
                     loginUsername.requestFocus();

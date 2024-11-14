@@ -10,7 +10,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +22,7 @@ import android.widget.TextView;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
-import android.widget.AdapterView;   //11.10添加
-import android.widget.ArrayAdapter;  //11.10添加
+import android.widget.AdapterView;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -36,16 +34,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class CallFragment extends Fragment {
 
-    private Spinner tagSpinner;       //11.10添加
-    private static final int PICK_IMAGE_REQUEST = 1; // 常量用於圖片選擇請求
-    private TextView detailDate; // 用於顯示選擇的日期
-    private TextView detailTime; // 用於顯示選擇的時間
-    private Button selectDateBtn; // 用於選擇日期的按鈕
-    private Button selectTimeBtn; // 用於選擇時間的按鈕
-    private ImageView detailImage; // 用於顯示選擇的圖片
-    private Button selectImageBtn; // 用於選擇圖片的按鈕
-    private Uri imageUri; // 用於存儲圖片的 URI
-    private Spinner categorySpinner; // 新增 Spinner 元件
+    private Spinner categorySpinner;  // 類別選擇 Spinner
+    private Spinner tagSpinner;       // 標籤選擇 Spinner
+    private static final int PICK_IMAGE_REQUEST = 1; // 圖片選擇請求代碼
+    private TextView detailDate;      // 顯示日期
+    private TextView detailTime;      // 顯示時間
+    private Button selectDateBtn;     // 日期選擇按鈕
+    private Button selectTimeBtn;     // 時間選擇按鈕
+    private ImageView detailImage;    // 顯示圖片的 ImageView
+    private Button selectImageBtn;    // 選擇圖片按鈕
+    private Uri imageUri;             // 圖片 URI
     private EditText activityName, activityAddress, activityDescription, participantCount;
 
     @Override
@@ -57,12 +55,12 @@ public class CallFragment extends Fragment {
         // 初始化界面元件
         Button create = view.findViewById(R.id.create);
         Button call_back = view.findViewById(R.id.call_back);
-        selectDateBtn = view.findViewById(R.id.selectDateBtn); // 日期選擇按鈕
-        selectTimeBtn = view.findViewById(R.id.selectTimeBtn); // 時間選擇按鈕
-        detailDate = view.findViewById(R.id.detailDate); // 顯示日期
-        detailTime = view.findViewById(R.id.detailTime); // 顯示時間
-        detailImage = view.findViewById(R.id.detailImage); // 顯示圖片
-        selectImageBtn = view.findViewById(R.id.selectImageBtn); // 選擇圖片按鈕
+        selectDateBtn = view.findViewById(R.id.selectDateBtn);
+        selectTimeBtn = view.findViewById(R.id.selectTimeBtn);
+        detailDate = view.findViewById(R.id.detailDate);
+        detailTime = view.findViewById(R.id.detailTime);
+        detailImage = view.findViewById(R.id.detailImage);
+        selectImageBtn = view.findViewById(R.id.selectImageBtn);
         activityName = view.findViewById(R.id.activityName);
         activityAddress = view.findViewById(R.id.detailIngredients);
         activityDescription = view.findViewById(R.id.detailDesc);
@@ -70,6 +68,36 @@ public class CallFragment extends Fragment {
 
         categorySpinner = view.findViewById(R.id.categorySpinner);
         tagSpinner = view.findViewById(R.id.tagSpinner);
+
+        // 設置 categorySpinner 的適配器，從 strings.xml 中讀取字串陣列
+        String[] categories = getResources().getStringArray(R.array.categories);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, categories);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(categoryAdapter);
+
+        // 設置初始的 tagSpinner（空的選項，會根據類別更新）
+        String[] defaultTags = {};
+        ArrayAdapter<String> tagAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, defaultTags);
+        tagAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        tagSpinner.setAdapter(tagAdapter);
+
+        // 監聽 categorySpinner 的選擇，根據選擇更新 tagSpinner 的內容
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedCategory = parentView.getItemAtPosition(position).toString();
+                String[] tags = getTagsForCategory(selectedCategory);
+                ArrayAdapter<String> tagAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, tags);
+                tagAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                tagSpinner.setAdapter(tagAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // 沒有選擇時不做任何處理
+            }
+        });
+
 
         // 設置選擇日期的功能
         selectDateBtn.setOnClickListener(view1 -> {
@@ -121,6 +149,7 @@ public class CallFragment extends Fragment {
 
             FirebaseAuth auth = FirebaseAuth.getInstance();
             FirebaseUser user = auth.getCurrentUser();
+            Log.e("Debug", "CallFragment- user: " + user);
 
             if (user != null) {
                 String itemId = FirebaseDatabase.getInstance().getReference("items").push().getKey();
@@ -138,7 +167,17 @@ public class CallFragment extends Fragment {
 
                 DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference("Items").child(itemId);
                 itemsRef.setValue(itemData)
-                        .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "活動已創建", Toast.LENGTH_SHORT).show())
+                        .addOnSuccessListener(aVoid -> {
+                            // 創建成功後顯示提示並返回主頁
+                            Toast.makeText(getActivity(), "活動已創建", Toast.LENGTH_SHORT).show();
+
+                            // 返回到主頁
+                            FragmentManager fragmentManager = getParentFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.frame_layout, new HomeFragment());
+                            fragmentTransaction.addToBackStack(null);  // 可以選擇添加到返回堆疊
+                            fragmentTransaction.commit();
+                        })
                         .addOnFailureListener(e -> Toast.makeText(getActivity(), "創建活動失敗", Toast.LENGTH_SHORT).show());
             }
         });
@@ -171,11 +210,32 @@ public class CallFragment extends Fragment {
             imageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                detailImage.setImageBitmap(bitmap); // 將選擇的圖片顯示在 ImageView 中
+                detailImage.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity(), "選擇圖片失敗", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    // 根據選擇的類別返回對應的標籤陣列
+    private String[] getTagsForCategory(String category) {
+        switch (category) {
+            case "休閒娛樂":
+                return getResources().getStringArray(R.array.leisure_tags);
+            case "運動":
+                return getResources().getStringArray(R.array.sports_tags);
+            case "車聚":
+                return getResources().getStringArray(R.array.car_meet_tags);
+            case "旅遊":
+                return getResources().getStringArray(R.array.travel_tags);
+            case "美食":
+                return getResources().getStringArray(R.array.food_tags);
+            case "寵物":
+                return getResources().getStringArray(R.array.pet_tags);
+            case "學習":
+                return getResources().getStringArray(R.array.learning_tags);
+            default:
+                return new String[]{}; // 默認返回空陣列
         }
     }
 }
