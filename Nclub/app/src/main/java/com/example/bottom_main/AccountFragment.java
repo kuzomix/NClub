@@ -62,7 +62,7 @@ public class AccountFragment extends Fragment {
         });
 
         initEditProfileActivityFunctionality(); // 初始化個人資料功能
-        initFriendActivityFunctionality(); // 初始化好友列表功能
+        initActivitylistFunctionality(); // 11.15初始化活動列表功能
         initLogoutFunctionality(); // 初始化登出功能
 
         return view;
@@ -120,14 +120,15 @@ public class AccountFragment extends Fragment {
         });
     }
 
-    // 好友列表功能的初始化
-    private void initFriendActivityFunctionality() {
-        ImageView friend = binding.imageView5; // 假設你在布局中有一個 ID 為 imageView5 的 ImageView
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
+
+    //初始化活動列表功能
+    private void initActivitylistFunctionality(){
+        ImageView Actlist = binding.imageView5;
+        Actlist.setOnClickListener(new View.OnClickListener() {
+        @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), FriendActivity.class);
-                startActivity(intent); // 跳轉至 FriendActivity
+                Intent intent = new Intent(getActivity(), Activitylist.class);
+                startActivity(intent); // 跳轉至 Activitylist
             }
         });
     }
