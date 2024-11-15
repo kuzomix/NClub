@@ -11,12 +11,20 @@ public class Message {
         // Default constructor required for calls to DataSnapshot.getValue(Message.class)
     }
 
-    public Message(String sender, String senderId, String text, String userId) {
+    public Message(String sender, String senderId, String text) {
         this.sender = sender;
         this.senderId = senderId;
         this.text = text;
         this.timestamp = String.valueOf(System.currentTimeMillis()); // 獲取當前時間戳
-        this.userId = userId; // 設置 userId
+    }
+
+    public Message(String sender, String senderId, String text, String timestamp, String  userId) {
+        this.sender = sender;
+        this.senderId = senderId;
+        this.text = text;
+        this.timestamp = timestamp;
+        this.userId = userId;
+
     }
 
     public String getSender() {

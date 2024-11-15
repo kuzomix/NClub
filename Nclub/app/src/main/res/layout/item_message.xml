@@ -7,10 +7,24 @@
     android:orientation="horizontal">
 
     <TextView
+        android:id="@+id/senderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
+
+    <TextView
         android:id="@+id/messageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:background="@drawable/bg_message_left" /> <!-- 預設左背景 -->
+
+    <TextView
+        android:id="@+id/timestampText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#999"/>
+
 </LinearLayout>

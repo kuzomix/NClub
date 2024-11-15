@@ -95,11 +95,13 @@ public class ChatDetailFragment extends Fragment {
                 for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
                     String messageText = messageSnapshot.child("text").getValue(String.class);
                     String sender = messageSnapshot.child("sender").getValue(String.class);
-                    String senderId = messageSnapshot.child("userId").getValue(String.class);
+                    String senderId = messageSnapshot.child("senderId").getValue(String.class);
+                    String timestamp = messageSnapshot.child("timestamp").getValue(String.class); // 獲取時間戳
+
                     Log.e("Debug", "loadChatMessages- senderId: " + senderId);
                     Log.e("Debug", "loadChatMessages- userId: " + userId);
 
-                    messageList.add(new Message(sender, senderId, messageText, userId));
+                    messageList.add(new Message(sender, senderId, messageText, timestamp, userId));
                 }
                 messageAdapter.notifyDataSetChanged(); // 更新適配器
                 chatRecyclerView.scrollToPosition(messageList.size() - 1); // 滾動到最新消息
@@ -114,7 +116,7 @@ public class ChatDetailFragment extends Fragment {
 
     private void sendMessage(String messageText) {
         DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference("chatrooms").child(chatroomId).child("messages").push();
-        messageRef.setValue(new Message(username, userId, messageText, userId)); // 假設有一個 Message 類別
+        messageRef.setValue(new Message(username, userId, messageText)); // 假設有一個 Message 類別
     }
 
     private String formatTimestamp(String timestamp) {
