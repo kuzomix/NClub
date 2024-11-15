@@ -25,15 +25,15 @@ public class ChatroomAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_item_chatroom, parent, false);
         }
-        TextView textView = convertView.findViewById(R.id.chatroomTitle); // 獲取 TextView
+
+        TextView textView = convertView.findViewById(R.id.chatListTitle); // 獲取正確的 TextView
         textView.setText(titles.get(position)); // 設置標題文本
 
         // 設置背景顏色
-        if (position % 2 == 0) {
-            convertView.setBackgroundColor(context.getResources().getColor(android.R.color.holo_blue_light));
-        } else {
-            convertView.setBackgroundColor(context.getResources().getColor(android.R.color.holo_green_light));
-        }
+        int color = (position % 2 == 0) ?
+                context.getResources().getColor(android.R.color.holo_blue_light) :
+                context.getResources().getColor(android.R.color.holo_green_light);
+        convertView.setBackgroundColor(color);
 
         return convertView;
     }
