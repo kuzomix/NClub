@@ -1,10 +1,10 @@
 package com.example.bottom_main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,7 +25,7 @@ public class ChatFragment extends Fragment {
     private ListView chatroomListView;
     private ArrayList<String> chatroomIds; // 聊天室 ID 列表
     private ArrayList<String> chatroomTitles; // 聊天室標題列表
-    private ArrayAdapter<String> adapter; // 適配器
+    private ChatroomAdapter adapter; // 自定義適配器
 
 
     @Override
@@ -39,13 +39,14 @@ public class ChatFragment extends Fragment {
             email = bundle.getString("email");
             userId = bundle.getString("userId");
         }
+        Log.e("Debug", "ChatFragment- userId: " + userId);
 
         chatroomListView = view.findViewById(R.id.chatroomListView);
         chatroomIds = new ArrayList<>();
         chatroomTitles = new ArrayList<>(); // 初始化標題列表
 
         // 初始化適配器
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, chatroomTitles);
+        adapter = new ChatroomAdapter(getActivity(), chatroomTitles);
         chatroomListView.setAdapter(adapter);
 
         // 加載聊天室 ID
@@ -88,12 +89,11 @@ public class ChatFragment extends Fragment {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
                                         String itemTitle = itemSnapshot.child("title").getValue(String.class);
-                                        chatroomTitles.add(itemTitle); // 添加標題到列表
-                                        // 更新 ListView
-                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, chatroomTitles);
-                                        chatroomListView.setAdapter(adapter);
+                                        if (itemTitle != null) {
+                                            chatroomTitles.add(itemTitle); // 添加標題到列表
+                                            adapter.notifyDataSetChanged(); // 更新適配器
+                                        }
                                     }
-
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                         Toast.makeText(getActivity(), "無法加載聊天室標題", Toast.LENGTH_SHORT).show();

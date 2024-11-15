@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ import java.util.Random;
 
 public class ChatDetailFragment extends Fragment {
     private String chatroomId;
+    private String itemTitle;
     private String userId; // 用戶 ID
     private String username; // 用戶名稱
     private RecyclerView chatRecyclerView;
@@ -51,9 +53,13 @@ public class ChatDetailFragment extends Fragment {
 
         if (getArguments() != null) {
             chatroomId = getArguments().getString("chatroomId");
+            itemTitle = getArguments().getString("title");
             userId = getArguments().getString("userId");
             username = getArguments().getString("username");
         }
+
+        TextView chatTitle = view.findViewById(R.id.chatTitle);
+        chatTitle.setText(itemTitle + "(聊天室)"); // 動態設置標題
 
         chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
