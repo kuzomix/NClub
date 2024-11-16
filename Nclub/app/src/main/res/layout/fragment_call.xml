@@ -73,13 +73,108 @@
             android:layout_marginStart="10dp"
             android:text="爬山"
             android:textSize="16sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:text="活動起訖日期:"
+            android:textColor="@color/lavender"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp">
+
+            <Button
+                android:id="@+id/selectStartDateBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="選擇起始日期" />
+
+            <Button
+                android:id="@+id/selectEndDateBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="選擇結束日期" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/detailStartDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="未選擇起始日期"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/detailEndDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="未選擇結束日期"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:text="活動日期:"
+            android:text="活動起訖時間:"
+            android:textColor="@color/lavender"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp">
+
+            <Button
+                android:id="@+id/selectStartTimeBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="選擇起始時間" />
+
+            <Button
+                android:id="@+id/selectEndTimeBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="選擇結束時間" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/detailStartTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="未選擇起始時間"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/detailEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="未選擇結束時間"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:text="創建日期(請填現在日期):"
             android:textColor="@color/lavender"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -103,7 +198,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:text="活動時間:"
+            android:text="創建時間(請填現在時間):"
             android:textColor="@color/lavender"
             android:textSize="18sp"
             android:textStyle="bold" />
