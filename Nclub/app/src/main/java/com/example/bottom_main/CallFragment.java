@@ -45,13 +45,18 @@ public class CallFragment extends Fragment {
     private Button selectImageBtn;    // 選擇圖片按鈕
     private Uri imageUri;             // 圖片 URI
     private EditText activityName, activityAddress, activityDescription, participantCount;
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_call, container, false);
-
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            userId = bundle.getString("userId");
+        }
+        Log.e("Debug", "ChatFragment- userId: " + userId);
         // 初始化界面元件
         Button create = view.findViewById(R.id.create);
         Button call_back = view.findViewById(R.id.call_back);
@@ -147,39 +152,50 @@ public class CallFragment extends Fragment {
             String selectedTag = tagSpinner.getSelectedItem().toString();
             String imageUriString = imageUri == null ? "https://example.com/default_image.jpg" : imageUri.toString();
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            FirebaseUser user = auth.getCurrentUser();
-            Log.e("Debug", "CallFragment- user: " + user);
+            String itemId = FirebaseDatabase.getInstance().getReference("items").push().getKey();
+            Map<String, Object> itemData = new HashMap<>();
+            itemData.put("address", addressString);
+            itemData.put("bed", activityBed);
+            itemData.put("dateTour", selectedDate);
+            itemData.put("timeTour", selectedTime);
+            itemData.put("description", descriptionString);
+            itemData.put("pic", imageUriString);
+            itemData.put("title", nameString);
+            itemData.put("category", selectedCategory);
+            itemData.put("tag", selectedTag);
+            itemData.put("ownUser", userId);
+            itemData.put("recommendFlag", false); // 新增 recommendFlag，預設為 false
+            itemData.put("popularFlag", false); // 新增 popularFlag，預設為 false
 
-            if (user != null) {
-                String itemId = FirebaseDatabase.getInstance().getReference("items").push().getKey();
-                Map<String, Object> itemData = new HashMap<>();
-                itemData.put("address", addressString);
-                itemData.put("bed", activityBed);
-                itemData.put("dateTour", selectedDate);
-                itemData.put("timeTour", selectedTime);
-                itemData.put("description", descriptionString);
-                itemData.put("pic", imageUriString);
-                itemData.put("title", nameString);
-                itemData.put("category", selectedCategory);
-                itemData.put("tag", selectedTag);
-                itemData.put("ownUser", user.getUid());
-
-                DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference("Items").child(itemId);
+            DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference("Items").child("itemId_"+itemId);
                 itemsRef.setValue(itemData)
                         .addOnSuccessListener(aVoid -> {
-                            // 創建成功後顯示提示並返回主頁
-                            Toast.makeText(getActivity(), "活動已創建", Toast.LENGTH_SHORT).show();
+                            // 創建 chatrooms 的 ID
+                            String chatroomId = "chatroomId_" + itemId;
+                            Map<String, Object> chatroomData = new HashMap<>();
+                            chatroomData.put("members", new HashMap<String, Boolean>() {{
+                                put(userId, true); // 當前用戶
+                                // 可以在這裡添加其他成員的 ID
+                            }});
+                            chatroomData.put("messages", new HashMap<>()); // 初始化為空的訊息
+                            chatroomData.put("tourItemId","itemId_"+itemId );
 
-                            // 返回到主頁
-                            FragmentManager fragmentManager = getParentFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.frame_layout, new HomeFragment());
-                            fragmentTransaction.addToBackStack(null);  // 可以選擇添加到返回堆疊
-                            fragmentTransaction.commit();
+                            // 新增 chatrooms 到資料庫
+                            DatabaseReference chatroomsRef = FirebaseDatabase.getInstance().getReference("chatrooms").child(chatroomId);
+                            chatroomsRef.setValue(chatroomData)
+                                    .addOnSuccessListener(aVoid1 -> {
+                                        Toast.makeText(getActivity(), "活動及聊天室已創建", Toast.LENGTH_SHORT).show();
+
+                                        // 返回到主頁
+                                        FragmentManager fragmentManager = getParentFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace(R.id.frame_layout, new HomeFragment());
+                                        fragmentTransaction.addToBackStack(null);  // 可以選擇添加到返回堆疊
+                                        fragmentTransaction.commit();
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "創建聊天室失敗", Toast.LENGTH_SHORT).show());
                         })
                         .addOnFailureListener(e -> Toast.makeText(getActivity(), "創建活動失敗", Toast.LENGTH_SHORT).show());
-            }
         });
 
         // 返回主頁按鈕
