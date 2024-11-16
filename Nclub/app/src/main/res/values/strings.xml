@@ -22,61 +22,93 @@
         <item>電影</item>
         <item>電競</item>
         <item>動漫</item>
+        <item>展覽</item>
+        <item>攝影</item>
+        <item>桌遊</item>
+        <item>戲劇</item>
+        <item>園藝</item>
+        <item>下棋</item>
+        <item>繪畫書法</item>
+        <item>樂器彈奏</item>
     </string-array>
 
     //sports_tags
     <string-array name="sports_tags">
         <item>跑步</item>
+        <item>散步</item>
+        <item>健身</item>
         <item>游泳</item>
         <item>籃球</item>
         <item>溜冰</item>
         <item>足球</item>
+        <item>棒球</item>
+        <item>登山</item>
+        <item>攀岩</item>
+        <item>跳舞</item>
+        <item>衝浪浮潛</item>
+        <item>瑜珈</item>
+        <item>自行車</item>
     </string-array>
 
     //car_meet_tags
     <string-array name="car_meet_tags">
-        <item>跑山</item>
+        <item>跑山夜遊</item>
         <item>汽車</item>
         <item>機車</item>
+        <item>重機</item>
         <item>騎車環島</item>
+        <item>車友聚會交流</item>
     </string-array>
 
     //travel_tags
     <string-array name="travel_tags">
-        <item>國內</item>
-        <item>國外</item>
-        <item>住宿</item>
+        <item>國內旅遊</item>
+        <item>出國度假</item>
+        <item>露營</item>
         <item>一日遊</item>
+        <item>畢業旅行</item>
+        <item>蜜月旅行</item>
+        <item>商務旅遊</item>
+        <item>生態之旅</item>
+        <item>歷史古蹟</item>
     </string-array>
 
     //food_tags
     <string-array name="food_tags">
-        <item>小吃</item>
-        <item>夜市</item>
+        <item>平價小吃</item>
+        <item>觀光夜市</item>
         <item>餐廳</item>
         <item>西式</item>
         <item>日式</item>
         <item>美式</item>
+        <item>中式</item>
+        <item>韓式</item>
+        <item>港式</item>
+        <item>義式</item>
+        <item>泰式</item>
+        <item>咖啡廳</item>
     </string-array>
 
     //pet_pet_tags
     <string-array name="pet_tags">
-        <item>貓咪</item>
-        <item>狗狗</item>
-        <item>小鳥</item>
-        <item>魚</item>
-        <item>爬蟲類</item>
+        <item>狗狗聚</item>
+        <item>貓咪聚</item>
+        <item>其他寵物</item>
+        <item>寵物美容</item>
+        <item>寵物展</item>
+        <item>寵物餐廳</item>
+        <item>寵物戶外活動</item>
     </string-array>
 
     //learning_tags
     <string-array name="learning_tags">
-        <item>國小</item>
         <item>國中</item>
         <item>高中</item>
         <item>大學</item>
+        <item>研究所</item>
         <item>備考</item>
-
-
+        <item>讀書會</item>
+        <item>語言學習</item>
     </string-array>
 
     <string name="event_image">Event Image</string>
