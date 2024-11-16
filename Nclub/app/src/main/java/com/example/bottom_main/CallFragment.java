@@ -39,8 +39,12 @@ public class CallFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1; // 圖片選擇請求代碼
     private TextView detailDate;      // 顯示日期
     private TextView detailTime;      // 顯示時間
+    private TextView detailEndDate;      // 顯示日期
+    private TextView detailEndTime;      // 顯示時間
     private Button selectDateBtn;     // 日期選擇按鈕
     private Button selectTimeBtn;     // 時間選擇按鈕
+    private Button selectEndDateBtn;     // 日期選擇按鈕
+    private Button selectEndTimeBtn;     // 時間選擇按鈕
     private ImageView detailImage;    // 顯示圖片的 ImageView
     private Button selectImageBtn;    // 選擇圖片按鈕
     private Uri imageUri;             // 圖片 URI
@@ -56,14 +60,18 @@ public class CallFragment extends Fragment {
         if (bundle != null) {
             userId = bundle.getString("userId");
         }
-        Log.e("Debug", "ChatFragment- userId: " + userId);
+        Log.e("Debug", "CallFragment- userId: " + userId);
         // 初始化界面元件
         Button create = view.findViewById(R.id.create);
         Button call_back = view.findViewById(R.id.call_back);
+        detailDate = view.findViewById(R.id.detailDate);
+        detailEndDate = view.findViewById(R.id.detailEndDate);
+        detailTime = view.findViewById(R.id.detailTime);
+        detailEndTime = view.findViewById(R.id.detailEndTime);
         selectDateBtn = view.findViewById(R.id.selectDateBtn);
         selectTimeBtn = view.findViewById(R.id.selectTimeBtn);
-        detailDate = view.findViewById(R.id.detailDate);
-        detailTime = view.findViewById(R.id.detailTime);
+        selectEndDateBtn = view.findViewById(R.id.selectEndDateBtn);
+        selectEndTimeBtn = view.findViewById(R.id.selectEndTimeBtn);
         detailImage = view.findViewById(R.id.detailImage);
         selectImageBtn = view.findViewById(R.id.selectImageBtn);
         activityName = view.findViewById(R.id.activityName);
@@ -103,38 +111,16 @@ public class CallFragment extends Fragment {
             }
         });
 
+        // 设置选择日期的功能
+        selectDateBtn.setOnClickListener(v -> showDatePickerDialog(detailDate));
+        selectEndDateBtn.setOnClickListener(v -> showDatePickerDialog(detailEndDate));
 
-        // 設置選擇日期的功能
-        selectDateBtn.setOnClickListener(view1 -> {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                    (datePicker, selectedYear, selectedMonth, selectedDay) -> {
-                        String date = String.format("%04d/%02d/%02d", selectedYear, selectedMonth + 1, selectedDay);
-                        detailDate.setText(date);
-                    }, year, month, day);
-            datePickerDialog.show();
-        });
-
-        // 設置選擇時間的功能
-        selectTimeBtn.setOnClickListener(view12 -> {
-            Calendar calendar1 = Calendar.getInstance();
-            int hour = calendar1.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar1.get(Calendar.MINUTE);
-
-            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
-                    (timePicker, selectedHour, selectedMinute) -> {
-                        String time = String.format("%02d:%02d", selectedHour, selectedMinute);
-                        detailTime.setText(time);
-                    }, hour, minute, true);
-            timePickerDialog.show();
-        });
+        // 设置选择时间的功能
+        selectTimeBtn.setOnClickListener(v -> showTimePickerDialog(detailTime));
+        selectEndTimeBtn.setOnClickListener(v -> showTimePickerDialog(detailEndTime));
 
         // 設置選擇圖片的功能
-        selectImageBtn.setOnClickListener(view13 -> openFileChooser());
+        selectImageBtn.setOnClickListener(v -> openFileChooser());
 
         // 創建活動的按鈕
         create.setOnClickListener(v -> {
@@ -148,6 +134,8 @@ public class CallFragment extends Fragment {
             }
             String selectedDate = detailDate.getText().toString();
             String selectedTime = detailTime.getText().toString();
+            String selectedEndDate = detailEndDate.getText().toString();
+            String selectedEndTime = detailEndTime.getText().toString();
             String selectedCategory = categorySpinner.getSelectedItem().toString();
             String selectedTag = tagSpinner.getSelectedItem().toString();
             String imageUriString = imageUri == null ? "https://example.com/default_image.jpg" : imageUri.toString();
@@ -156,8 +144,11 @@ public class CallFragment extends Fragment {
             Map<String, Object> itemData = new HashMap<>();
             itemData.put("address", addressString);
             itemData.put("bed", activityBed);
-            itemData.put("dateTour", selectedDate);
-            itemData.put("timeTour", selectedTime);
+//            itemData.put("dateTour", selectedDate);
+//            itemData.put("timeTour", selectedTime);
+            String timeStamp = String.valueOf(System.currentTimeMillis());// 獲取當前時間戳 )
+            itemData.put("createDate", timeStamp);
+            itemData.put("changeDate", timeStamp);
             itemData.put("description", descriptionString);
             itemData.put("pic", imageUriString);
             itemData.put("title", nameString);
@@ -179,7 +170,10 @@ public class CallFragment extends Fragment {
                             }});
                             chatroomData.put("messages", new HashMap<>()); // 初始化為空的訊息
                             chatroomData.put("tourItemId","itemId_"+itemId );
-
+                            chatroomData.put("startDateTour", selectedDate);
+                            chatroomData.put("startTimeTour", selectedTime);
+                            chatroomData.put("endDateTour", selectedEndDate);
+                            chatroomData.put("endTimeTour", selectedEndTime);
                             // 新增 chatrooms 到資料庫
                             DatabaseReference chatroomsRef = FirebaseDatabase.getInstance().getReference("chatrooms").child(chatroomId);
                             chatroomsRef.setValue(chatroomData)
@@ -231,6 +225,33 @@ public class CallFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void showDatePickerDialog(TextView targetTextView) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(),
+                (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+                    String date = String.format("%04d/%02d/%02d", selectedYear, selectedMonth + 1, selectedDay);
+                    targetTextView.setText(date);
+                }, year, month, day);
+        datePickerDialog.show();
+    }
+
+    private void showTimePickerDialog(TextView targetTextView) {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(requireActivity(),
+                (timePicker, selectedHour, selectedMinute) -> {
+                    String time = String.format("%02d:%02d", selectedHour, selectedMinute);
+                    targetTextView.setText(time);
+                }, hour, minute, true);
+        timePickerDialog.show();
     }
 
     // 根據選擇的類別返回對應的標籤陣列

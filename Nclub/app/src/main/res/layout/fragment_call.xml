@@ -15,7 +15,7 @@
         <Button
             android:id="@+id/call_back"
             android:layout_width="80dp"
-            android:layout_height="37dp"
+            android:layout_height="48dp"
             android:text="返回" />
 
         <TextView
@@ -71,152 +71,151 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="爬山"
+            android:text="請輸入活動名稱"
             android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:text="活動起訖日期:"
-            android:textColor="@color/lavender"
-            android:textSize="18sp"
-            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="20dp">
 
-            <Button
-                android:id="@+id/selectStartDateBtn"
-                android:layout_width="0dp"
+            <!-- 活動開始文字 -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="選擇起始日期" />
+                android:text="活動開始:"
+                android:textColor="@color/lavender"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" /> <!-- 增加底部間距 -->
 
-            <Button
-                android:id="@+id/selectEndDateBtn"
-                android:layout_width="0dp"
+            <!-- 開始日期和開始時間顯示在同一行 -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="選擇結束日期" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <!-- 開始日期顯示 -->
+                <TextView
+                    android:id="@+id/detailDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="未選擇開始日期"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp" /> <!-- 增加右邊間距 -->
+
+                <!-- 開始時間顯示 -->
+                <TextView
+                    android:id="@+id/detailTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="未選擇開始時間"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 開始日期和開始時間選擇的按鈕 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- 開始日期選擇按鈕 -->
+                <Button
+                    android:id="@+id/selectDateBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="開始日期"
+                    android:layout_marginEnd="8dp" /> <!-- 增加右邊間距 -->
+
+                <!-- 開始時間選擇按鈕 -->
+                <Button
+                    android:id="@+id/selectTimeBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="開始時間" />
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/detailStartDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="未選擇起始日期"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/detailEndDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="未選擇結束日期"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:text="活動起訖時間:"
-            android:textColor="@color/lavender"
-            android:textSize="18sp"
-            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="20dp">
 
-            <Button
-                android:id="@+id/selectStartTimeBtn"
-                android:layout_width="0dp"
+            <!-- 活動結束文字 -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="選擇起始時間" />
+                android:text="活動結束:"
+                android:textColor="@color/lavender"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" /> <!-- 增加底部間距 -->
 
-            <Button
-                android:id="@+id/selectEndTimeBtn"
-                android:layout_width="0dp"
+            <!-- 結束日期和結束時間顯示在同一行 -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="選擇結束時間" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:weightSum="2">
+
+                <!-- 結束日期顯示 -->
+                <TextView
+                    android:id="@+id/detailEndDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="未選擇結束日期"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp" /> <!-- 增加右邊間距 -->
+
+                <!-- 結束時間顯示 -->
+                <TextView
+                    android:id="@+id/detailEndTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="未選擇結束時間"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 結束日期和結束時間選擇的按鈕 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- 結束日期選擇按鈕 -->
+                <Button
+                    android:id="@+id/selectEndDateBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="結束日期"
+                    android:layout_marginEnd="8dp" /> <!-- 增加右邊間距 -->
+
+                <!-- 結束時間選擇按鈕 -->
+                <Button
+                    android:id="@+id/selectEndTimeBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="結束時間" />
+            </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/detailStartTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="未選擇起始時間"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/detailEndTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="未選擇結束時間"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:text="創建日期(請填現在日期):"
-            android:textColor="@color/lavender"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/selectDateBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="選擇日期" />
-
-        <TextView
-            android:id="@+id/detailDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="未選擇日期"
-            android:textSize="16sp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:text="創建時間(請填現在時間):"
-            android:textColor="@color/lavender"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/selectTimeBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="選擇時間" />
-
-        <TextView
-            android:id="@+id/detailTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="未選擇時間"
-            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -233,7 +232,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="武嶺"
+            android:text="新增地點"
             android:textSize="16sp" />
 
         <!-- 活動分類選擇 -->
@@ -295,7 +294,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:hint="5人"
+            android:hint="新增報名者人數"
             android:inputType="number"
             android:textSize="16sp" />
 
@@ -313,7 +312,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="歡迎各位登山好友來參加~"
+            android:text="介紹你的活動,吸引更多朋友來參與!"
             android:layout_marginStart="10dp"
             android:textSize="16sp"
             android:id="@+id/detailDesc"/>
