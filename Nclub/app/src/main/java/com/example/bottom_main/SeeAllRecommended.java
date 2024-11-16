@@ -54,9 +54,9 @@ public class SeeAllRecommended extends AppCompatActivity {
                     String title = snapshot.child("title").getValue(String.class);
                     String imageUrl = snapshot.child("pic").getValue(String.class);
                     String description = snapshot.child("description").getValue(String.class);
-                    Log.d("Firebase", "title imageUrl description: " + title + ";" + imageUrl + ";" + description);
+                    boolean recommendFlag = snapshot.child("recommendFlag").getValue(Boolean.class);
 
-                    if (title != null && imageUrl != null && description != null) {
+                    if (title != null && imageUrl != null && description != null && recommendFlag) {
                         Event event = new Event(id,title, imageUrl, description);
                         recommendedEvents.add(event);
                         Log.d("Firebase", "Loaded event: " + recommendedEvents.size());
