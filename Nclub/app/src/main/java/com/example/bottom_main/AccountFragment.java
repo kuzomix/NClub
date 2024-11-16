@@ -39,13 +39,13 @@ public class AccountFragment extends Fragment {
         // 獲取傳遞的參數
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String name1 = bundle.getString("name");
+            String userName = bundle.getString("username");
             userId = bundle.getString("userId");
-            Log.e("AccountFragment", "name: " + name1);
+            Log.e("AccountFragment", "userName: " + userName);
             Log.e("AccountFragment", "userId: " + userId);
 
             TextView usernameTextView1 = view.findViewById(R.id.username_text_view);
-            usernameTextView1.setText(name1);  // 設定用戶名
+            usernameTextView1.setText(userName);  // 設定用戶名
         }
 
         // 返回主頁面
