@@ -91,8 +91,3 @@ public class DetailActivity extends BaseActivity {
         });
     }
 }
-
-//    private void getIntentExtra() {
-//        object= (ItemDomain) getIntent().getSerializableExtra("object");
-//    }
-//}
