@@ -31,6 +31,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 
 public class CallFragment extends Fragment {
 
@@ -48,6 +51,7 @@ public class CallFragment extends Fragment {
     private ImageView detailImage;    // 顯示圖片的 ImageView
     private Button selectImageBtn;    // 選擇圖片按鈕
     private Uri imageUri;             // 圖片 URI
+    private Uri localImageUri;
     private EditText activityName, activityAddress, activityDescription, participantCount;
     private String userId;
 
@@ -144,8 +148,6 @@ public class CallFragment extends Fragment {
             Map<String, Object> itemData = new HashMap<>();
             itemData.put("address", addressString);
             itemData.put("bed", activityBed);
-//            itemData.put("dateTour", selectedDate);
-//            itemData.put("timeTour", selectedTime);
             String timeStamp = String.valueOf(System.currentTimeMillis());// 獲取當前時間戳 )
             itemData.put("createDate", timeStamp);
             itemData.put("changeDate", timeStamp);
@@ -212,19 +214,42 @@ public class CallFragment extends Fragment {
         startActivityForResult(Intent.createChooser(intent, "選擇圖片"), PICK_IMAGE_REQUEST);
     }
 
-    // 處理圖片選擇的結果
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                detailImage.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+        localImageUri = data.getData();
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), localImageUri);
+            detailImage.setImageBitmap(bitmap);
+            uploadImageToFirebase();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+}
+
+    private void uploadImageToFirebase() {
+        // 獲取 Firebase Storage 的實例
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // 創建一個唯一的圖片路徑
+        StorageReference imageRef = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
+
+        // 上傳圖片
+        imageRef.putFile(localImageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // 獲取圖片的下載 URL
+                    imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        imageUri = uri;
+                        // 在這裡可以將 imageUrl 存儲到 Realtime Database
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    // 上傳失敗的處理
+                    e.printStackTrace();
+                });
     }
 
     private void showDatePickerDialog(TextView targetTextView) {
