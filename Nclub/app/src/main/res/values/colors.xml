@@ -15,4 +15,5 @@
     <color name="red">#FF0000</color>
     <color name="primaryColor">#FF4081</color>
     <color name="transparent">#00000000</color>
+    <color name="placeholder_color">#D3D3D3</color>
 </resources>

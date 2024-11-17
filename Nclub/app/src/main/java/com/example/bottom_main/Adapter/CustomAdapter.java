@@ -44,7 +44,7 @@ public class CustomAdapter extends BaseAdapter {
         TextView listTime = convertView.findViewById(R.id.listTime);
 
         listName.setText(data[position]);
-        listTime.setText("12:00 PM");
+        listTime.setText("1分鐘前");
 
         return convertView;
     }
