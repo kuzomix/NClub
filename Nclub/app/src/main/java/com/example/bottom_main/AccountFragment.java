@@ -126,15 +126,20 @@ public class AccountFragment extends Fragment {
     private void initActivitylistFunctionality(){
         ImageView Actlist = binding.imageView5;
         Actlist.setOnClickListener(new View.OnClickListener() {
-        @Override
+            @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Activitylist.class);
-                startActivity(intent); // 跳轉至 Activitylist
+                if (userId != null) { // 確保 userId 不為空
+                    Intent intent = new Intent(getActivity(), Activitylist.class);
+                    intent.putExtra("userId", userId); // 傳遞 userId
+                    startActivity(intent); // 跳轉至 Activitylist
+                } else {
+                    Toast.makeText(getActivity(), "用戶 ID 未獲取", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    //初始化活動列表功能
+    //初始化我主辦的活動列表功能
     private void initHostActivityFunctionality(){
         ImageView Actlist = binding.imageView11;
         Actlist.setOnClickListener(new View.OnClickListener() {
