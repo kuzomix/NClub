@@ -31,6 +31,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 
 public class CallFragment extends Fragment {
 
@@ -39,26 +42,40 @@ public class CallFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1; // 圖片選擇請求代碼
     private TextView detailDate;      // 顯示日期
     private TextView detailTime;      // 顯示時間
+    private TextView detailEndDate;      // 顯示日期
+    private TextView detailEndTime;      // 顯示時間
     private Button selectDateBtn;     // 日期選擇按鈕
     private Button selectTimeBtn;     // 時間選擇按鈕
+    private Button selectEndDateBtn;     // 日期選擇按鈕
+    private Button selectEndTimeBtn;     // 時間選擇按鈕
     private ImageView detailImage;    // 顯示圖片的 ImageView
     private Button selectImageBtn;    // 選擇圖片按鈕
     private Uri imageUri;             // 圖片 URI
+    private Uri localImageUri;
     private EditText activityName, activityAddress, activityDescription, participantCount;
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_call, container, false);
-
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            userId = bundle.getString("userId");
+        }
+        Log.e("Debug", "CallFragment- userId: " + userId);
         // 初始化界面元件
         Button create = view.findViewById(R.id.create);
         Button call_back = view.findViewById(R.id.call_back);
+        detailDate = view.findViewById(R.id.detailDate);
+        detailEndDate = view.findViewById(R.id.detailEndDate);
+        detailTime = view.findViewById(R.id.detailTime);
+        detailEndTime = view.findViewById(R.id.detailEndTime);
         selectDateBtn = view.findViewById(R.id.selectDateBtn);
         selectTimeBtn = view.findViewById(R.id.selectTimeBtn);
-        detailDate = view.findViewById(R.id.detailDate);
-        detailTime = view.findViewById(R.id.detailTime);
+        selectEndDateBtn = view.findViewById(R.id.selectEndDateBtn);
+        selectEndTimeBtn = view.findViewById(R.id.selectEndTimeBtn);
         detailImage = view.findViewById(R.id.detailImage);
         selectImageBtn = view.findViewById(R.id.selectImageBtn);
         activityName = view.findViewById(R.id.activityName);
@@ -98,38 +115,16 @@ public class CallFragment extends Fragment {
             }
         });
 
+        // 设置选择日期的功能
+        selectDateBtn.setOnClickListener(v -> showDatePickerDialog(detailDate));
+        selectEndDateBtn.setOnClickListener(v -> showDatePickerDialog(detailEndDate));
 
-        // 設置選擇日期的功能
-        selectDateBtn.setOnClickListener(view1 -> {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                    (datePicker, selectedYear, selectedMonth, selectedDay) -> {
-                        String date = String.format("%04d/%02d/%02d", selectedYear, selectedMonth + 1, selectedDay);
-                        detailDate.setText(date);
-                    }, year, month, day);
-            datePickerDialog.show();
-        });
-
-        // 設置選擇時間的功能
-        selectTimeBtn.setOnClickListener(view12 -> {
-            Calendar calendar1 = Calendar.getInstance();
-            int hour = calendar1.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar1.get(Calendar.MINUTE);
-
-            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
-                    (timePicker, selectedHour, selectedMinute) -> {
-                        String time = String.format("%02d:%02d", selectedHour, selectedMinute);
-                        detailTime.setText(time);
-                    }, hour, minute, true);
-            timePickerDialog.show();
-        });
+        // 设置选择时间的功能
+        selectTimeBtn.setOnClickListener(v -> showTimePickerDialog(detailTime));
+        selectEndTimeBtn.setOnClickListener(v -> showTimePickerDialog(detailEndTime));
 
         // 設置選擇圖片的功能
-        selectImageBtn.setOnClickListener(view13 -> openFileChooser());
+        selectImageBtn.setOnClickListener(v -> openFileChooser());
 
         // 創建活動的按鈕
         create.setOnClickListener(v -> {
@@ -143,43 +138,60 @@ public class CallFragment extends Fragment {
             }
             String selectedDate = detailDate.getText().toString();
             String selectedTime = detailTime.getText().toString();
+            String selectedEndDate = detailEndDate.getText().toString();
+            String selectedEndTime = detailEndTime.getText().toString();
             String selectedCategory = categorySpinner.getSelectedItem().toString();
             String selectedTag = tagSpinner.getSelectedItem().toString();
             String imageUriString = imageUri == null ? "https://example.com/default_image.jpg" : imageUri.toString();
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            FirebaseUser user = auth.getCurrentUser();
-            Log.e("Debug", "CallFragment- user: " + user);
+            String itemId = FirebaseDatabase.getInstance().getReference("items").push().getKey();
+            Map<String, Object> itemData = new HashMap<>();
+            itemData.put("address", addressString);
+            itemData.put("bed", activityBed);
+            long timeStamp = System.currentTimeMillis();// 獲取當前時間戳
+            itemData.put("createDate", timeStamp);
+            itemData.put("changeDate", timeStamp);
+            itemData.put("description", descriptionString);
+            itemData.put("pic", imageUriString);
+            itemData.put("title", nameString);
+            itemData.put("category", selectedCategory);
+            itemData.put("tag", selectedTag);
+            itemData.put("ownUser", userId);
+            itemData.put("recommendFlag", false); // 新增 recommendFlag，預設為 false
+            itemData.put("popularFlag", false); // 新增 popularFlag，預設為 false
 
-            if (user != null) {
-                String itemId = FirebaseDatabase.getInstance().getReference("items").push().getKey();
-                Map<String, Object> itemData = new HashMap<>();
-                itemData.put("address", addressString);
-                itemData.put("bed", activityBed);
-                itemData.put("dateTour", selectedDate);
-                itemData.put("timeTour", selectedTime);
-                itemData.put("description", descriptionString);
-                itemData.put("pic", imageUriString);
-                itemData.put("title", nameString);
-                itemData.put("category", selectedCategory);
-                itemData.put("tag", selectedTag);
-                itemData.put("ownUser", user.getUid());
-
-                DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference("Items").child(itemId);
+            DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference("Items").child("itemId_"+itemId);
                 itemsRef.setValue(itemData)
                         .addOnSuccessListener(aVoid -> {
-                            // 創建成功後顯示提示並返回主頁
-                            Toast.makeText(getActivity(), "活動已創建", Toast.LENGTH_SHORT).show();
+                            // 創建 chatrooms 的 ID
+                            String chatroomId = "chatroomId_" + itemId;
+                            Map<String, Object> chatroomData = new HashMap<>();
+                            chatroomData.put("members", new HashMap<String, Boolean>() {{
+                                put(userId, true); // 當前用戶
+                                // 可以在這裡添加其他成員的 ID
+                            }});
+                            chatroomData.put("messages", new HashMap<>()); // 初始化為空的訊息
+                            chatroomData.put("tourItemId","itemId_"+itemId );
+                            chatroomData.put("startDateTour", selectedDate);
+                            chatroomData.put("startTimeTour", selectedTime);
+                            chatroomData.put("endDateTour", selectedEndDate);
+                            chatroomData.put("endTimeTour", selectedEndTime);
+                            // 新增 chatrooms 到資料庫
+                            DatabaseReference chatroomsRef = FirebaseDatabase.getInstance().getReference("chatrooms").child(chatroomId);
+                            chatroomsRef.setValue(chatroomData)
+                                    .addOnSuccessListener(aVoid1 -> {
+                                        Toast.makeText(getActivity(), "活動及聊天室已創建", Toast.LENGTH_SHORT).show();
 
-                            // 返回到主頁
-                            FragmentManager fragmentManager = getParentFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.frame_layout, new HomeFragment());
-                            fragmentTransaction.addToBackStack(null);  // 可以選擇添加到返回堆疊
-                            fragmentTransaction.commit();
+                                        // 返回到主頁
+                                        FragmentManager fragmentManager = getParentFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace(R.id.frame_layout, new HomeFragment());
+                                        fragmentTransaction.addToBackStack(null);  // 可以選擇添加到返回堆疊
+                                        fragmentTransaction.commit();
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "創建聊天室失敗", Toast.LENGTH_SHORT).show());
                         })
                         .addOnFailureListener(e -> Toast.makeText(getActivity(), "創建活動失敗", Toast.LENGTH_SHORT).show());
-            }
         });
 
         // 返回主頁按鈕
@@ -202,19 +214,69 @@ public class CallFragment extends Fragment {
         startActivityForResult(Intent.createChooser(intent, "選擇圖片"), PICK_IMAGE_REQUEST);
     }
 
-    // 處理圖片選擇的結果
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                detailImage.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+        localImageUri = data.getData();
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), localImageUri);
+            detailImage.setImageBitmap(bitmap);
+            uploadImageToFirebase();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+}
+
+    private void uploadImageToFirebase() {
+        // 獲取 Firebase Storage 的實例
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // 創建一個唯一的圖片路徑
+        StorageReference imageRef = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
+
+        // 上傳圖片
+        imageRef.putFile(localImageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // 獲取圖片的下載 URL
+                    imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        imageUri = uri;
+                        // 在這裡可以將 imageUrl 存儲到 Realtime Database
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    // 上傳失敗的處理
+                    e.printStackTrace();
+                });
+    }
+
+    private void showDatePickerDialog(TextView targetTextView) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(),
+                (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+                    String date = String.format("%04d/%02d/%02d", selectedYear, selectedMonth + 1, selectedDay);
+                    targetTextView.setText(date);
+                }, year, month, day);
+        datePickerDialog.show();
+    }
+
+    private void showTimePickerDialog(TextView targetTextView) {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(requireActivity(),
+                (timePicker, selectedHour, selectedMinute) -> {
+                    String time = String.format("%02d:%02d", selectedHour, selectedMinute);
+                    targetTextView.setText(time);
+                }, hour, minute, true);
+        timePickerDialog.show();
     }
 
     // 根據選擇的類別返回對應的標籤陣列

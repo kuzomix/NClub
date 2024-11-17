@@ -39,13 +39,13 @@ public class AccountFragment extends Fragment {
         // 獲取傳遞的參數
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String name1 = bundle.getString("name");
+            String userName = bundle.getString("username");
             userId = bundle.getString("userId");
-            Log.e("AccountFragment", "name: " + name1);
+            Log.e("AccountFragment", "userName: " + userName);
             Log.e("AccountFragment", "userId: " + userId);
 
             TextView usernameTextView1 = view.findViewById(R.id.username_text_view);
-            usernameTextView1.setText(name1);  // 設定用戶名
+            usernameTextView1.setText(userName);  // 設定用戶名
         }
 
         // 返回主頁面
@@ -62,7 +62,8 @@ public class AccountFragment extends Fragment {
         });
 
         initEditProfileActivityFunctionality(); // 初始化個人資料功能
-        initFriendActivityFunctionality(); // 初始化好友列表功能
+        initActivitylistFunctionality(); // 11.15初始化活動列表功能
+        initHostActivityFunctionality(); // 11.16初始化我主辦的活動功能
         initLogoutFunctionality(); // 初始化登出功能
 
         return view;
@@ -120,14 +121,27 @@ public class AccountFragment extends Fragment {
         });
     }
 
-    // 好友列表功能的初始化
-    private void initFriendActivityFunctionality() {
-        ImageView friend = binding.imageView5; // 假設你在布局中有一個 ID 為 imageView5 的 ImageView
-        friend.setOnClickListener(new View.OnClickListener() {
+
+    //初始化活動列表功能
+    private void initActivitylistFunctionality(){
+        ImageView Actlist = binding.imageView5;
+        Actlist.setOnClickListener(new View.OnClickListener() {
+        @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), Activitylist.class);
+                startActivity(intent); // 跳轉至 Activitylist
+            }
+        });
+    }
+
+    //初始化活動列表功能
+    private void initHostActivityFunctionality(){
+        ImageView Actlist = binding.imageView11;
+        Actlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), FriendActivity.class);
-                startActivity(intent); // 跳轉至 FriendActivity
+                Intent intent = new Intent(getActivity(), Activitylist.class);
+                startActivity(intent); // 跳轉至 Activitylist
             }
         });
     }

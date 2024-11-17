@@ -2,21 +2,21 @@ package com.example.bottom_main;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;   //11.11new
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.bottom_main.Domain.ItemDomain;
 import com.example.bottom_main.databinding.ActivityDetailBinding;
-import com.google.firebase.database.DataSnapshot;      //11.11new
-import com.google.firebase.database.DatabaseError;     //11.11new
-import com.google.firebase.database.DatabaseReference; //11.11new
-import com.google.firebase.database.FirebaseDatabase;  //11.11new
-import com.google.firebase.database.ValueEventListener;//11.11new
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class DetailActivity extends BaseActivity {
     ActivityDetailBinding binding;
     private ItemDomain object;
-    private String eventId; // 11.11new 新增變量存儲 eventId
+    private String eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,35 +24,30 @@ public class DetailActivity extends BaseActivity {
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        eventId = getIntent().getStringExtra("eventId");
-        if (eventId != null) {  //11.11new if.else
-            loadEventDetails(); // 使用 eventId 加載活動詳細內容
+        getIntentExtra(); // Retrieve Intent data
+        if (eventId != null) {
+            loadEventDetails(); // Load event details using eventId
         } else {
-            setVariable();
+            setVariable(); // Set variables if object is directly passed
         }
     }
 
-    //11.11new
     private void getIntentExtra() {
-        // 嘗試從 Intent 中獲取 eventId
         eventId = getIntent().getStringExtra("eventId");
         if (eventId == null) {
-            // 如果沒有 eventId，則嘗試獲取序列化的 object
             object = (ItemDomain) getIntent().getSerializableExtra("object");
         }
     }
 
-    //11.11new
     private void loadEventDetails() {
-        // 根據 eventId 從 Firebase 加載活動詳細資訊
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Items").child(eventId);
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    object = dataSnapshot.getValue(ItemDomain.class); // 將資料庫內容映射到 ItemDomain 類
+                    object = dataSnapshot.getValue(ItemDomain.class);
                     if (object != null) {
-                        setVariable(); // 更新視圖
+                        setVariable();
                     }
                 } else {
                     Toast.makeText(DetailActivity.this, "無法找到活動詳細內容", Toast.LENGTH_SHORT).show();
@@ -67,13 +62,13 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setVariable() {
-        if (object == null) return; // 11.11檢查 object 是否為 null
+        if (object == null) return;
         binding.titleTxt.setText(object.getTitle());
-        binding.priceTxt.setText("" + object.getPrice());
+        binding.priceTxt.setText(String.valueOf(object.getPrice()));
         binding.backBtn.setOnClickListener(view -> finish());
-        binding.bedTxt.setText("" + object.getBed());
-        binding.durationTxt.setText(object.getDuration());
-        binding.distanceTxt.setText(object.getDistance());
+        binding.bedTxt.setText(String.valueOf(object.getBed()));
+//        binding.durationTxt.setText(object.getDuration());
+//        binding.distanceTxt.setText(object.getDistance());
         binding.descriptionTxt.setText(object.getDescription());
         binding.addressTxt.setText(object.getAddress());
         binding.ratingTxt.setText(object.getScore() + "評分");
@@ -83,16 +78,9 @@ public class DetailActivity extends BaseActivity {
                 .load(object.getPic())
                 .into(binding.pic);
 
-        binding.addToCartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Intent intent=new Intent(DetailActivity.this,)
-            }
+        binding.addToCartBtn.setOnClickListener(view -> {
+            Toast.makeText(DetailActivity.this, "已添加到購物車", Toast.LENGTH_SHORT).show();
+            // Logic to add the item to the cart can be added here
         });
     }
 }
-
-//    private void getIntentExtra() {
-//        object= (ItemDomain) getIntent().getSerializableExtra("object");
-//    }
-//}
