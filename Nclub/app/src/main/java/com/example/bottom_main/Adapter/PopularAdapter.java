@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bottom_main.DetailActivity;
 import com.example.bottom_main.Domain.ItemDomain;
+import com.example.bottom_main.R;
 import com.example.bottom_main.databinding.ViewholderPopularBinding;
 
 import java.util.ArrayList;
@@ -36,19 +37,20 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewhold
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
         ItemDomain item = items.get(position);
         holder.binding.titleTxt.setText(item.getTitle());
-        holder.binding.priceTxt.setText("" + item.getPrice());
+        holder.binding.priceTxt.setText(String.valueOf(item.getPrice()));
         holder.binding.addressTxt.setText(item.getAddress());
         holder.binding.scoreTxt.setText(String.valueOf(item.getScore()));
 
         Glide.with(context)
                 .load(item.getPic())
+
                 .into(holder.binding.pic);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(context, DetailActivity.class);
-                intent.putExtra("object",items.get(position));
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("object", item); // 傳遞物件
                 context.startActivity(intent);
             }
         });
@@ -60,11 +62,11 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Viewhold
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder {
+        private final ViewholderPopularBinding binding;
+
         public Viewholder(ViewholderPopularBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
-
-        private final ViewholderPopularBinding binding; // Declare binding here
     }
 }

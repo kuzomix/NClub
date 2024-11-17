@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
         // 初始化 Firebase 資料庫和各個引用
         database = FirebaseDatabase.getInstance();
         categoryRef = database.getReference("Category");
-        popularRef = database.getReference("Popular");
+        popularRef = database.getReference("Items");
         recommendedRef = database.getReference("Items");
         bannerRef = database.getReference("Banner");
         locationRef = database.getReference("Location");

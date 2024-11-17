@@ -148,7 +148,7 @@ public class CallFragment extends Fragment {
             Map<String, Object> itemData = new HashMap<>();
             itemData.put("address", addressString);
             itemData.put("bed", activityBed);
-            String timeStamp = String.valueOf(System.currentTimeMillis());// 獲取當前時間戳 )
+            long timeStamp = System.currentTimeMillis();// 獲取當前時間戳
             itemData.put("createDate", timeStamp);
             itemData.put("changeDate", timeStamp);
             itemData.put("description", descriptionString);
