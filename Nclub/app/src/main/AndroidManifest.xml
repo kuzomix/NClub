@@ -18,6 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BottomNavigationDemo"
         tools:targetApi="31">
+
+        <activity android:name=".CalendarWeekViewActivity"
+            android:exported="false"/>
+        <activity android:name=".CalendarDailyActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".Activitylist"
             android:exported="false" />
