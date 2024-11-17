@@ -48,6 +48,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra("object", item);
+            intent.putExtra("userId", item.getItemId()); // 傳遞物件
             context.startActivity(intent);
         });
     }

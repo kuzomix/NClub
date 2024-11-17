@@ -19,6 +19,8 @@ public class ItemDomain implements Serializable {
     private ArrayList<String> tags; // 標籤
     private int price;             // 價格
     private double score;          // 評分
+    private String itemId;
+    private String userId;
 
     // Getter 和 Setter 方法
     public String getTitle() {
@@ -125,6 +127,19 @@ public class ItemDomain implements Serializable {
         this.score = score; // Set the score
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public String getUserId() {
+        return userId; // Return the itemId
+    }
+
+    public String getItemId() {
+        return itemId; // Return the itemId
+    }
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
     public ItemDomain() {
         // 預設建構子
     }

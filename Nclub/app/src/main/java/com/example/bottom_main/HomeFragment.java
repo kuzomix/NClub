@@ -44,6 +44,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private FirebaseDatabase database;
     private DatabaseReference categoryRef, popularRef, recommendedRef, bannerRef, locationRef;
+    private String userId;
 
     @Nullable
     @Override
@@ -55,7 +56,7 @@ public class HomeFragment extends Fragment {
         if (bundle != null) {
             String username = bundle.getString("username");
             String email = bundle.getString("email");
-            String userId = bundle.getString("userId");
+            userId = bundle.getString("userId");
             // 使用這些資料
             TextView usernameTextView = view.findViewById(R.id.textView3);
             usernameTextView.setText(username);
@@ -179,7 +180,14 @@ public class HomeFragment extends Fragment {
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
-                        list.add(issue.getValue(ItemDomain.class));
+//                        list.add(issue.getValue(ItemDomain.class));
+                        ItemDomain item = issue.getValue(ItemDomain.class);
+                        if (item != null) {
+                            String itemId = issue.getKey(); // 這裡獲取 itemId
+                            item.setItemId(itemId); // 設置 itemId
+                            item.setUserId(userId); // 將已知的 userId 設置到 ItemDomain
+                            list.add(item); // 然後將物件添加到列表
+                        }
                     }
                     setupRecyclerView(binding.recyclerViewPopular, new PopularAdapter(list), LinearLayoutManager.HORIZONTAL);
                     binding.progressBarPopular.setVisibility(View.GONE);
@@ -213,7 +221,13 @@ public class HomeFragment extends Fragment {
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
-                        list.add(issue.getValue(ItemDomain.class));
+                        ItemDomain item = issue.getValue(ItemDomain.class);
+                        if (item != null) {
+                            String itemId = issue.getKey(); // 這裡獲取 itemId
+                            item.setItemId(itemId); // 設置 itemId
+                            item.setUserId(userId); // 將已知的 userId 設置到 ItemDomain
+                            list.add(item); // 然後將物件添加到列表
+                        }
                     }
                     setupRecyclerView(binding.recyclerViewRecommended, new RecommendedAdapter(list), LinearLayoutManager.HORIZONTAL);
                     binding.progressBarRecommended.setVisibility(View.GONE);
