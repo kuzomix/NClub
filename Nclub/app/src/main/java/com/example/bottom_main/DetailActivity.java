@@ -18,7 +18,7 @@ public class DetailActivity extends BaseActivity {
     ActivityDetailBinding binding;
     private ItemDomain object;
     private String eventId;
-    private boolean isFollowed = false; // 用於追蹤當前是否已關注
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,62 +28,12 @@ public class DetailActivity extends BaseActivity {
         getIntentExtra(); // 獲取 Intent 資料
         if (eventId != null) {
             loadEventDetails(); // 使用 eventId 加載活動詳細內容
-            checkFollowStatus(); // 檢查當前的關注狀態
         } else {
             setVariable(); // 如果直接傳遞了物件，則設置變數
         }
-        // 設置關注按鈕點擊事件，切換關注狀態
-        binding.follow.setOnClickListener(v -> toggleFollowStatus());
-    }
-    // 檢查關注狀態，從 Firebase 中獲取數據並更新 isFollowed 的值
-    private void checkFollowStatus() {
-        DatabaseReference followRef = FirebaseDatabase.getInstance().getReference("Follows").child(eventId);
-        followRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                isFollowed = dataSnapshot.exists(); // 如果資料存在則表示已關注
-                updateFollowIcon(); // 更新關注按鈕圖標
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(DetailActivity.this, "無法加載關注狀態。", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
-    // 切換關注狀態並更新 Firebase
-    private void toggleFollowStatus() {
-        DatabaseReference followRef = FirebaseDatabase.getInstance().getReference("Follows").child(eventId);
-        if (isFollowed) {
-            // 若已關注則移除
-            followRef.removeValue().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    isFollowed = false;
-                    updateFollowIcon(); // 更新圖標顯示
-                    Toast.makeText(DetailActivity.this, "取消關注", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            // 若未關注則新增記錄
-            followRef.setValue(true).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    isFollowed = true;
-                    updateFollowIcon();
-                    Toast.makeText(DetailActivity.this, "已關注", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    // 更新關注圖標：已關注顯示 follow_icon，未關注顯示 fav_icon
-    private void updateFollowIcon() {
-        if (isFollowed) {
-            binding.follow.setImageResource(R.drawable.follow_icon);
-        } else {
-            binding.follow.setImageResource(R.drawable.fav_icon);
-        }
-    }
     private void getIntentExtra() {
         eventId = getIntent().getStringExtra("eventId");
         if (eventId == null) {

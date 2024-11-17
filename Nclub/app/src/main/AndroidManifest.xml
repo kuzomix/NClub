@@ -20,9 +20,7 @@
         <activity
             android:name=".FollowActivity"
             android:exported="false" />
-        <activity
-            android:name=".FollowedEventsAdapter"
-            android:exported="false" />
+
         <activity
             android:name=".CategoryEventsAdapter"
             android:exported="false" />
@@ -41,7 +39,6 @@
         <activity
             android:name=".EditProfileActivity"
             android:exported="false" />
-
         <activity
             android:name=".MapActivity"
             android:exported="false" />
