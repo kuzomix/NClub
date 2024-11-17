@@ -74,6 +74,11 @@ public class DetailActivity extends BaseActivity {
         binding.addressTxt.setText(object.getAddress());
         binding.ratingTxt.setText(object.getScore() + "評分");
         binding.ratingBar.setRating((float) object.getScore());
+        binding.durationTxt.setText(object.getStartDateTour());
+        binding.durationTxt2.setText(object.getEndDateTour());
+        binding.distanceTxt.setText(object.getStartTimeTour());
+        binding.distanceTxt2.setText(object.getEndTimeTour());
+
 
 
         Glide.with(DetailActivity.this)

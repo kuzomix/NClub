@@ -23,6 +23,10 @@ public class ItemDomain implements Serializable {
     private double score;          // 評分
     private String itemId;
     private String userId;
+    private String startDateTour;
+    private String endDateTour;
+    private String startTimeTour;
+    private String endTimeTour;
 
 
     // Getter 和 Setter 方法
@@ -145,5 +149,29 @@ public class ItemDomain implements Serializable {
     }
     public ItemDomain() {
         // 預設建構子
+    }
+
+    public void setStartDateTour(String startDateTour) {this.startDateTour = startDateTour;
+    }
+    public String getStartDateTour() {
+        return startDateTour; // Return the itemId
+    }
+
+    public void setEndDateTour(String endDateTour) {this.endDateTour = endDateTour;
+    }
+    public String getEndDateTour() {
+        return endDateTour; // Return the itemId
+    }
+
+    public void setStartTimeTour(String startTimeTour) {this.startTimeTour = startTimeTour;
+    }
+    public String getStartTimeTour() {
+        return startTimeTour; // Return the itemId
+    }
+
+    public void setEndTimeTour(String endTimeTour) {this.endTimeTour = endTimeTour;
+    }
+    public String getEndTimeTour() {
+        return endTimeTour; // Return the itemId
     }
 }
