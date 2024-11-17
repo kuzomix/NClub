@@ -1,5 +1,7 @@
 package com.example.bottom_main.Domain;
 
+import com.example.bottom_main.SearchResultsActivity;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -19,6 +21,7 @@ public class ItemDomain implements Serializable {
     private ArrayList<String> tags; // 標籤
     private int price;             // 價格
     private double score;          // 評分
+
 
     // Getter 和 Setter 方法
     public String getTitle() {

@@ -30,7 +30,7 @@ import com.example.bottom_main.Domain.Category;
 import com.example.bottom_main.Domain.ItemDomain;
 import com.example.bottom_main.Domain.Location;
 import com.example.bottom_main.Domain.SliderItems;
-import com.example.bottom_main.R;
+import com.example.bottom_main.MainActivity;
 import com.example.bottom_main.databinding.FragmentHomeBinding;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -153,7 +153,11 @@ public class HomeFragment extends Fragment {
                         }
                     }
                     if (!searchResults.isEmpty()) {
-                        setupRecyclerView(binding.recyclerViewRecommended, new RecommendedAdapter(searchResults), LinearLayoutManager.HORIZONTAL);
+                        // 傳遞搜尋結果到新的畫面
+                        Intent intent = new Intent(getActivity(), SearchResultsActivity.class);
+                        intent.putExtra("searchResults", searchResults);
+                        intent.putExtra("searchQuery", query);
+                        startActivity(intent);
                     } else {
                         showError("No items found matching the search tag.");
                     }
@@ -237,18 +241,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-//private void initSeeAllFunctionality() {
-//    TextView seeAllTextView = binding.textView6; // 確保 ID 與佈局中的 TextView 匹配
-//    seeAllTextView.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-//            Intent intent = new Intent(getActivity(), SeeAllRecommended.class);
-//            startActivity(intent); // 開啟 SeeAllRecommended 活動
-//        }
-//    });
-//}
-
 
     // 初始化類別
     private void initCategory() {
