@@ -18,6 +18,8 @@ public class DetailActivity extends BaseActivity {
     ActivityDetailBinding binding;
     private ItemDomain object;
     private String eventId;
+    private boolean isFollowing = false; // 預設為未關注
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,31 @@ public class DetailActivity extends BaseActivity {
                 .load(object.getPic())
                 .into(binding.pic);
 
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(object.getUserId());
+
+        userRef.child("follow").child(object.getItemId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    isFollowing = true; // 用戶已關注
+                    binding.follow.setImageResource(R.drawable.follow_icon); // 設置為紅色圖標
+                } else {
+                    isFollowing = false; // 用戶未關注
+                    binding.follow.setImageResource(R.drawable.fav_icon); // 設置為默認圖標
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(DetailActivity.this, "讀取數據失敗：" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 關注按鈕的點擊事件
+        binding.follow.setOnClickListener(view -> {
+            toggleFollow(object.getItemId());
+        });
+
 //        binding.addToCartBtn.setOnClickListener(view -> {
 //            Toast.makeText(DetailActivity.this, "準備參加此活動", Toast.LENGTH_SHORT).show();
 //            Log.e("Debug", "DetailActivity- userId: " + object.getUserId());
@@ -146,4 +173,33 @@ public class DetailActivity extends BaseActivity {
             });
 //        });
     }
+    private void toggleFollow(String itemId) {
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(object.getItemId());
+
+        if (isFollowing) {
+            // 如果已關注，取消關注
+            userRef.child("follow").child(itemId).removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    isFollowing = false; // 更新狀態
+                    binding.follow.setImageResource(R.drawable.fav_icon); // 設置為默認圖標
+                    Toast.makeText(DetailActivity.this, "已取消關注", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(DetailActivity.this, "取消關注失敗：" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // 如果未關注，添加關注
+            userRef.child("follow").child(itemId).setValue(true).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    isFollowing = true; // 更新狀態
+                    binding.follow.setImageResource(R.drawable.follow_icon); // 設置為紅色圖標
+                    Toast.makeText(DetailActivity.this, "關注成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(DetailActivity.this, "關注失敗：" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
 }
