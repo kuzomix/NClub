@@ -19,6 +19,7 @@ public class DetailActivity extends BaseActivity {
     private ItemDomain object;
     private String eventId;
     private boolean isFollowing = false; // 預設為未關注
+    private String userId;
 
 
     @Override
@@ -41,6 +42,7 @@ public class DetailActivity extends BaseActivity {
         if (eventId == null) {
             object = (ItemDomain) getIntent().getSerializableExtra("object");
         }
+        userId = getIntent().getStringExtra("userId");
     }
 
     private void loadEventDetails() {
@@ -82,15 +84,16 @@ public class DetailActivity extends BaseActivity {
         binding.distanceTxt.setText(object.getStartTimeTour());
         binding.distanceTxt2.setText(object.getEndTimeTour());
 
-
+        if (userId == null) userId = object.getUserId();
+        if (eventId == null) eventId =  object.getItemId();
 
         Glide.with(DetailActivity.this)
                 .load(object.getPic())
                 .into(binding.pic);
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(object.getUserId());
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
-        userRef.child("follow").child(object.getItemId()).addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.child("follow").child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -110,20 +113,20 @@ public class DetailActivity extends BaseActivity {
 
         // 關注按鈕的點擊事件
         binding.follow.setOnClickListener(view -> {
-            toggleFollow(object.getItemId());
+            toggleFollow(eventId);
         });
 
 //        binding.addToCartBtn.setOnClickListener(view -> {
 //            Toast.makeText(DetailActivity.this, "準備參加此活動", Toast.LENGTH_SHORT).show();
-//            Log.e("Debug", "DetailActivity- userId: " + object.getUserId());
-//            Log.e("Debug", "DetailActivity- itemId: " + object.getItemId());
+//            Log.e("Debug", "DetailActivity- userId: " + userId);
+//            Log.e("Debug", "DetailActivity- itemId: " + userId);
 
 
-            String chatroomId = "chatroomId_"+object.getItemId().substring(7);
+            String chatroomId = "chatroomId_"+eventId.substring(7);
             DatabaseReference chatroomRef = FirebaseDatabase.getInstance().getReference("chatrooms").child(chatroomId).child("members");
 
 //            // 將用戶 ID 添加到 members 中
-//            chatroomRef.child(object.getUserId()).setValue(false).addOnCompleteListener(task -> {
+//            chatroomRef.child(userId).setValue(false).addOnCompleteListener(task -> {
 //                if (task.isSuccessful()) {
 //                    Toast.makeText(DetailActivity.this, "已報名活動並審核中", Toast.LENGTH_SHORT).show();
 //                } else {
@@ -131,7 +134,7 @@ public class DetailActivity extends BaseActivity {
 //                }
 //            });
             // 檢查 userId 是否存在於聊天室成員中
-            chatroomRef.child(object.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            chatroomRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (!dataSnapshot.exists()) {
@@ -139,11 +142,11 @@ public class DetailActivity extends BaseActivity {
                         binding.addToCartBtn.setEnabled(true);
                         binding.addToCartBtn.setOnClickListener(view -> {
                             Toast.makeText(DetailActivity.this, "報名中，請稍後!", Toast.LENGTH_SHORT).show();
-                            Log.e("Debug", "DetailActivity- userId: " + object.getUserId());
-                            Log.e("Debug", "DetailActivity- itemId: " + object.getItemId());
+                            Log.e("Debug", "DetailActivity- userId: " + userId);
+                            Log.e("Debug", "DetailActivity- itemId: " + eventId);
 
                             // 將用戶 ID 添加到 members 中
-                            chatroomRef.child(object.getUserId()).setValue(false).addOnCompleteListener(task -> {
+                            chatroomRef.child(userId).setValue(false).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(DetailActivity.this, "已報名活動並審核中", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -175,7 +178,7 @@ public class DetailActivity extends BaseActivity {
     }
     private void toggleFollow(String itemId) {
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(object.getUserId());
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         if (isFollowing) {
             // 如果已關注，取消關注

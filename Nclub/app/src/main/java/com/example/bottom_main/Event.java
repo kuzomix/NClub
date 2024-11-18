@@ -6,12 +6,14 @@ public class Event {
     private String title;
     private String imageUrl;
     private String description;
+    private String userId;
 
-    public Event(String id,String title, String imageUrl, String description) {
+    public Event(String id,String title, String imageUrl, String description, String userId) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
+        this.userId = userId;
     }
 
     // 獲取活動 ID 的方法
@@ -31,4 +33,9 @@ public class Event {
     public String getDescription() {
         return description;
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
 }

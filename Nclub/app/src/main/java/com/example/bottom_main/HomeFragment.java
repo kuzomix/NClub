@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
@@ -189,42 +190,45 @@ public class HomeFragment extends Fragment {
 //                        list.add(issue.getValue(ItemDomain.class));
                         ItemDomain item = issue.getValue(ItemDomain.class);
                         if (item != null) {
-                            String itemId = issue.getKey(); // 獲取 itemId
-                            item.setItemId(itemId); // 設置 itemId
-                            item.setUserId(userId); // 設置 userId
+                            // 檢查 popularFlag
+                            if (item.isPopularFlag()) {
+                                String itemId = issue.getKey(); // 獲取 itemId
+                                item.setItemId(itemId); // 設置 itemId
+                                item.setUserId(userId); // 設置 userId
 
-                            // 查詢 chatrooms 以獲取 startDateTour 和 endDateTour
-                            String chatroomId = "chatroomId_" + itemId.substring(7); // 根據 itemId 獲取 chatroomId
-                            DatabaseReference chatroomRef = database.getReference("chatrooms").child(chatroomId);
+                                // 查詢 chatrooms 以獲取 startDateTour 和 endDateTour
+                                String chatroomId = "chatroomId_" + itemId.substring(7); // 根據 itemId 獲取 chatroomId
+                                DatabaseReference chatroomRef = database.getReference("chatrooms").child(chatroomId);
 
-                            chatroomRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot chatroomSnapshot) {
-                                    if (chatroomSnapshot.exists()) {
-                                        String tourItemId = chatroomSnapshot.child("tourItemId").getValue(String.class);
-                                        if (tourItemId != null && tourItemId.equals(itemId)) {
-                                            // 如果 tourItemId 等於 itemId，獲取日期
-                                            String startDateTour = chatroomSnapshot.child("startDateTour").getValue(String.class);
-                                            String endDateTour = chatroomSnapshot.child("endDateTour").getValue(String.class);
-                                            String startTimeTour = chatroomSnapshot.child("startTimeTour").getValue(String.class);
-                                            String endTimeTour = chatroomSnapshot.child("endTimeTour").getValue(String.class);
-                                            // 將日期設置到 ItemDomain
-                                            item.setStartDateTour(startDateTour);
-                                            item.setEndDateTour(endDateTour);
-                                            item.setStartTimeTour(startTimeTour);
-                                            item.setEndTimeTour(endTimeTour);
+                                chatroomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot chatroomSnapshot) {
+                                        if (chatroomSnapshot.exists()) {
+                                            String tourItemId = chatroomSnapshot.child("tourItemId").getValue(String.class);
+                                            if (tourItemId != null && tourItemId.equals(itemId)) {
+                                                // 如果 tourItemId 等於 itemId，獲取日期
+                                                String startDateTour = chatroomSnapshot.child("startDateTour").getValue(String.class);
+                                                String endDateTour = chatroomSnapshot.child("endDateTour").getValue(String.class);
+                                                String startTimeTour = chatroomSnapshot.child("startTimeTour").getValue(String.class);
+                                                String endTimeTour = chatroomSnapshot.child("endTimeTour").getValue(String.class);
+                                                // 將日期設置到 ItemDomain
+                                                item.setStartDateTour(startDateTour);
+                                                item.setEndDateTour(endDateTour);
+                                                item.setStartTimeTour(startTimeTour);
+                                                item.setEndTimeTour(endTimeTour);
+                                            }
                                         }
+                                        list.add(item); // 添加到列表
+                                        setupRecyclerView(binding.recyclerViewPopular, new PopularAdapter(list), LinearLayoutManager.HORIZONTAL);
+                                        binding.progressBarPopular.setVisibility(View.GONE);
                                     }
-                                    list.add(item); // 添加到列表
-                                    setupRecyclerView(binding.recyclerViewPopular, new PopularAdapter(list), LinearLayoutManager.HORIZONTAL);
-                                    binding.progressBarPopular.setVisibility(View.GONE);
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError error) {
-                                    handleError(error);
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(DatabaseError error) {
+                                        handleError(error);
+                                    }
+                                });
+                            }
                         }
                     }                } else {
                     showError("No popular items found.");
@@ -236,12 +240,24 @@ public class HomeFragment extends Fragment {
                 handleError(error);
             }
         });
+//        TextView seeAllTextView = binding.textView8; // 確保 ID 與佈局中的 TextView 匹配
+//        seeAllTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), SeeAllPopular.class);
+//                startActivity(intent); // 開啟 SeeAllPopular 活動
+//            }
+//        });
         TextView seeAllTextView = binding.textView8; // 確保 ID 與佈局中的 TextView 匹配
         seeAllTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SeeAllPopular.class);
-                startActivity(intent); // 開啟 SeeAllPopular 活動
+                // 使用片段事務來替換當前片段
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                SeeAllPopularFragment fragment = new SeeAllPopularFragment(userId);
+                transaction.replace(R.id.frame_layout, fragment); // 確保 fragment_container 是你的容器 ID
+                transaction.addToBackStack(null); // 可選：將此事務添加到返回堆疊
+                transaction.commit(); // 提交事務
             }
         });
     }
@@ -258,42 +274,45 @@ public class HomeFragment extends Fragment {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         ItemDomain item = issue.getValue(ItemDomain.class);
                         if (item != null) {
-                            String itemId = issue.getKey(); // 獲取 itemId
-                            item.setItemId(itemId); // 設置 itemId
-                            item.setUserId(userId); // 設置 userId
+                            // 檢查 popularFlag
+                            if (item.isRecommendFlag()) {
+                                String itemId = issue.getKey(); // 獲取 itemId
+                                item.setItemId(itemId); // 設置 itemId
+                                item.setUserId(userId); // 設置 userId
 
-                            // 查詢 chatrooms 以獲取 startDateTour 和 endDateTour
-                            String chatroomId = "chatroomId_" + itemId.substring(7); // 根據 itemId 獲取 chatroomId
-                            DatabaseReference chatroomRef = database.getReference("chatrooms").child(chatroomId);
+                                // 查詢 chatrooms 以獲取 startDateTour 和 endDateTour
+                                String chatroomId = "chatroomId_" + itemId.substring(7); // 根據 itemId 獲取 chatroomId
+                                DatabaseReference chatroomRef = database.getReference("chatrooms").child(chatroomId);
 
-                            chatroomRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot chatroomSnapshot) {
-                                    if (chatroomSnapshot.exists()) {
-                                        String tourItemId = chatroomSnapshot.child("tourItemId").getValue(String.class);
-                                        if (tourItemId != null && tourItemId.equals(itemId)) {
-                                            // 如果 tourItemId 等於 itemId，獲取日期
-                                            String startDateTour = chatroomSnapshot.child("startDateTour").getValue(String.class);
-                                            String endDateTour = chatroomSnapshot.child("endDateTour").getValue(String.class);
-                                            String startTimeTour = chatroomSnapshot.child("startTimeTour").getValue(String.class);
-                                            String endTimeTour = chatroomSnapshot.child("endTimeTour").getValue(String.class);
-                                            // 將日期設置到 ItemDomain
-                                            item.setStartDateTour(startDateTour);
-                                            item.setEndDateTour(endDateTour);
-                                            item.setStartTimeTour(startTimeTour);
-                                            item.setEndTimeTour(endTimeTour);
+                                chatroomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot chatroomSnapshot) {
+                                        if (chatroomSnapshot.exists()) {
+                                            String tourItemId = chatroomSnapshot.child("tourItemId").getValue(String.class);
+                                            if (tourItemId != null && tourItemId.equals(itemId)) {
+                                                // 如果 tourItemId 等於 itemId，獲取日期
+                                                String startDateTour = chatroomSnapshot.child("startDateTour").getValue(String.class);
+                                                String endDateTour = chatroomSnapshot.child("endDateTour").getValue(String.class);
+                                                String startTimeTour = chatroomSnapshot.child("startTimeTour").getValue(String.class);
+                                                String endTimeTour = chatroomSnapshot.child("endTimeTour").getValue(String.class);
+                                                // 將日期設置到 ItemDomain
+                                                item.setStartDateTour(startDateTour);
+                                                item.setEndDateTour(endDateTour);
+                                                item.setStartTimeTour(startTimeTour);
+                                                item.setEndTimeTour(endTimeTour);
+                                            }
                                         }
+                                        list.add(item); // 添加到列表
+                                        setupRecyclerView(binding.recyclerViewRecommended, new RecommendedAdapter(list), LinearLayoutManager.HORIZONTAL);
+                                        binding.progressBarRecommended.setVisibility(View.GONE);
                                     }
-                                    list.add(item); // 添加到列表
-                                    setupRecyclerView(binding.recyclerViewRecommended, new RecommendedAdapter(list), LinearLayoutManager.HORIZONTAL);
-                                    binding.progressBarRecommended.setVisibility(View.GONE);
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError error) {
-                                    handleError(error);
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(DatabaseError error) {
+                                        handleError(error);
+                                    }
+                                });
+                            }
                         }
                     }
                 } else {
