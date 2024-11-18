@@ -15,7 +15,7 @@ public class NotificationActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.listview);
 
         // 示例數據
-        String[] data = {"項目 1", "項目 2", "項目 3"};
+        String[] data = {"已成功加入<跨年之旅>活動", "R發送「我迷路了」訊息", "R發送「SOS」訊息","R發送「我到了」訊息"};
 
         // 創建自定義適配器並設置給 ListView
         CustomAdapter adapter = new CustomAdapter(this, data);

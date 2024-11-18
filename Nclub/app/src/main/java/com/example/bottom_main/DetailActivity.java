@@ -31,6 +31,7 @@ public class DetailActivity extends BaseActivity {
         } else {
             setVariable(); // 如果直接傳遞了物件，則設置變數
         }
+
     }
 
     private void getIntentExtra() {

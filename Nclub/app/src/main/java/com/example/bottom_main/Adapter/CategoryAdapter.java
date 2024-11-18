@@ -1,7 +1,7 @@
 package com.example.bottom_main.Adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.bottom_main.CategoryDetailActivity;
 import com.example.bottom_main.Domain.Category;
 import com.example.bottom_main.R;
 import com.example.bottom_main.databinding.ViewholderCategoryBinding;
@@ -36,7 +37,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category item = items.get(position);
         holder.binding.title.setText(item.getName());
 
@@ -45,20 +46,29 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                 .into(holder.binding.pic);
 
         holder.binding.getRoot().setOnClickListener(view -> {
-            lastSelectedPosition = selectedPosition;
-            selectedPosition = position;
-            notifyItemChanged(lastSelectedPosition);
-            notifyItemChanged(selectedPosition);
+            // 如果是同一個位置被點擊兩次，則跳轉到詳細頁面
+            if (selectedPosition == position) {
+                // 點擊兩次同一個項目，跳轉到詳細頁面
+                Intent intent = new Intent(context, CategoryDetailActivity.class);
+                intent.putExtra("categoryName", item.getName());  // 傳遞分類名稱
+                context.startActivity(intent);  // 啟動詳細頁面
+            } else {
+                // 如果是第一次選擇該項目，則更新選中的項目
+                lastSelectedPosition = selectedPosition;
+                selectedPosition = position;
+                notifyItemChanged(lastSelectedPosition);
+                notifyItemChanged(selectedPosition);
+            }
         });
 
         if (selectedPosition == position) {
-            holder.binding.pic.setBackground(null); // 更改為 null 表示移除背景
-            holder.binding.mainLayout.setBackgroundResource(R.drawable.blue_bg);
+            holder.binding.pic.setBackground(null);
+            holder.binding.mainLayout.setBackgroundResource(R.drawable.white_corner_bg);
             holder.binding.title.setVisibility(View.VISIBLE);
         } else {
             holder.binding.pic.setBackgroundResource(R.drawable.gray_bg);
-            holder.binding.mainLayout.setBackground(null); // 這裡清除背景
-            holder.binding.title.setVisibility(View.GONE); // 確保隱藏未選中項目的標題
+            holder.binding.mainLayout.setBackground(null);
+            holder.binding.title.setVisibility(View.GONE);
         }
     }
 
