@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
+class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 {
     private final ArrayList<LocalDate> days; // 存儲日期的列表
     private final OnItemListener onItemListener; // 點擊事件監聽器
@@ -73,4 +73,5 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
         void onItemClick(int position, LocalDate date); // 當點擊日曆單元格時調用
     }
 }
+
 

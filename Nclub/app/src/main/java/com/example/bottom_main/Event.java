@@ -6,6 +6,14 @@ public class Event {
     private String title;
     private String imageUrl;
     private String description;
+    private String startDateTour;
+    private String endDateTour;
+    private String startTimeTour;
+    private String endTimeTour;
+    private String tourItemId;
+
+    public Event() {
+    }
 
     public Event(String id,String title, String imageUrl, String description) {
         this.id = id;
@@ -30,5 +38,48 @@ public class Event {
 
     public String getDescription() {
         return description;
+    }
+    public String getStartDateTour() {
+        return startDateTour;
+    }
+
+    public void setStartDateTour(String startDateTour) {
+        this.startDateTour = startDateTour;
+    }
+
+    public String getEndDateTour() {
+        return endDateTour;
+    }
+
+    public void setEndDateTour(String endDateTour) {
+        this.endDateTour = endDateTour;
+    }
+
+    public String getStartTimeTour() {
+        return startTimeTour;
+    }
+
+    public void setStartTimeTour(String startTimeTour) {
+        this.startTimeTour = startTimeTour;
+    }
+
+    public String getEndTimeTour() {
+        return endTimeTour;
+    }
+
+    public void setEndTimeTour(String endTimeTour) {
+        this.endTimeTour = endTimeTour;
+    }
+
+    public String getTourItemId() {
+        return tourItemId;
+    }
+
+    public void setTourItemId(String tourItemId) {
+        this.tourItemId = tourItemId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

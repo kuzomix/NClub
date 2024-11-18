@@ -3,92 +3,64 @@ package com.example.bottom_main;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class CalendarEvent
-{
-    // 靜態事件列表，用於存儲所有事件
-    public static ArrayList<CalendarEvent> eventsList = new ArrayList<>();
+public class CalendarEvent {
+    private String title;
+    private String startTimeTour;
+    private String endTimeTour;
 
-    // 根據日期查找事件
-    public static ArrayList<CalendarEvent> eventsForDate(LocalDate date)
-    {
-        ArrayList<CalendarEvent> events = new ArrayList<>();
 
-        // 遍歷所有事件，將日期匹配的事件添加到結果列表中
-        for(CalendarEvent event : eventsList)
-        {
-            if(event.getDate().equals(date))
-                events.add(event);
+    // 用於行事曆的構造函數
+    public CalendarEvent(String title, String startTimeTour, String endTimeTour) {
+        this.title = title;
+        this.startTimeTour = startTimeTour;
+        this.endTimeTour = endTimeTour;
+    }
+
+    // Getter 和 Setter
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getStartTimeTour() {
+        return startTimeTour;
+    }
+
+    public void setStartTimeTour(String startTimeTour) {
+        this.startTimeTour = startTimeTour;
+    }
+
+    public String getEndTimeTour() {
+        return endTimeTour;
+    }
+
+    public void setEndTimeTour(String endTimeTour) {
+        this.endTimeTour = endTimeTour;
+    }
+
+    // 靜態方法：過濾指定日期的事件
+    public static List<CalendarEvent> eventsForDate(LocalDate date, Map<LocalDate, List<Event>> eventsMap) {
+        List<CalendarEvent> events = new ArrayList<>();
+        List<Event> eventList = eventsMap.getOrDefault(date, new ArrayList<>());
+
+        for (Event e : eventList) {
+            // 確保顯示的 title 是正確的
+            String displayTitle = e.getTitle() != null ? e.getTitle() : "未命名活動";
+            events.add(new CalendarEvent(
+                    "活動: " + displayTitle,
+                    e.getStartTimeTour(),
+                    e.getEndTimeTour()
+            ));
         }
 
         return events;
     }
 
-    // 根據日期和時間查找事件
-    public static ArrayList<CalendarEvent> eventsForDateAndTime(LocalDate date, LocalTime time)
-    {
-        ArrayList<CalendarEvent> events = new ArrayList<>();
-
-        // 遍歷所有事件，將日期和小時匹配的事件添加到結果列表中
-        for(CalendarEvent event : eventsList)
-        {
-            int eventHour = event.time.getHour();
-            int cellHour = time.getHour();
-            if(event.getDate().equals(date) && eventHour == cellHour)
-                events.add(event);
-        }
-
-        return events;
-    }
-
-    // 事件的名稱
-    private String name;
-    // 事件的日期
-    private LocalDate date;
-    // 事件的時間
-    private LocalTime time;
-
-    // 構造函數，初始化事件的名稱、日期和時間
-    public CalendarEvent(String name, LocalDate date, LocalTime time)
-    {
-        this.name = name;
-        this.date = date;
-        this.time = time;
-    }
-
-    // 獲取事件的名稱
-    public String getName()
-    {
-        return name;
-    }
-
-    // 設置事件的名稱
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    // 獲取事件的日期
-    public LocalDate getDate()
-    {
-        return date;
-    }
-
-    // 設置事件的日期
-    public void setDate(LocalDate date)
-    {
-        this.date = date;
-    }
-
-    // 獲取事件的時間
-    public LocalTime getTime()
-    {
-        return time;
-    }
-
-    // 設置事件的時間
-    public void setTime(LocalTime time)
-    {
-        this.time = time;
-    }
 }
+

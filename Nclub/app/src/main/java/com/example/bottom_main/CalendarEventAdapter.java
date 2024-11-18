@@ -35,10 +35,11 @@ public class CalendarEventAdapter extends ArrayAdapter<CalendarEvent>
         TextView eventCellTV = convertView.findViewById(R.id.eventCellTV);
 
         // 設置事件標題，包含事件名稱和格式化的時間
-        String eventTitle = event.getName() + " " + CalendarUtils.formattedTime(event.getTime());
+        String eventTitle = event.getTitle() + " " + CalendarUtils.formattedTime(event.getStartTimeTour());
         eventCellTV.setText(eventTitle);
 
         // 返回修改後的視圖
         return convertView;
     }
 }
+
