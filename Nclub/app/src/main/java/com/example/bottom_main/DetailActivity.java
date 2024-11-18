@@ -175,7 +175,7 @@ public class DetailActivity extends BaseActivity {
     }
     private void toggleFollow(String itemId) {
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(object.getItemId());
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(object.getUserId());
 
         if (isFollowing) {
             // 如果已關注，取消關注
