@@ -61,7 +61,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/accountimg"
+                    android:src="@drawable/mej"
                     app:shapeAppearanceOverlay="@style/CircleImageViewStyle" />
 
                 <ImageView
