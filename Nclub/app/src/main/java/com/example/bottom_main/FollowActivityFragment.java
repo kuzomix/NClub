@@ -17,14 +17,14 @@ import com.google.firebase.database.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityListFragment extends Fragment {
+public class FollowActivityFragment extends Fragment {
     private EventAdapter eventAdapter;
     private RecyclerView recyclerView;
     private List<Event> recommendedEvents = new ArrayList<>(); // 初始化類別變量
     private String userId;
 
     // 新增構造函數
-    public ActivityListFragment(String userId) {
+    public FollowActivityFragment(String userId) {
         this.userId = userId;
     }
 
@@ -32,7 +32,7 @@ public class ActivityListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // 加載佈局
-        View view = inflater.inflate(R.layout.activitylist, container, false);
+        View view = inflater.inflate(R.layout.activity_follow, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
 
@@ -54,31 +54,27 @@ public class ActivityListFragment extends Fragment {
     }
 
     private void getTourItemIds() {
-        DatabaseReference chatroomRef = FirebaseDatabase.getInstance().getReference("chatrooms");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        chatroomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        // 獲取特定用戶的關注項目
+        usersRef.child(userId).child("follow").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> tourItemIds = new ArrayList<>(); // 用於存儲符合條件的 tourItemId
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    // 檢查 members 中是否包含 userId 並且值為 true
-                    Boolean isMember = snapshot.child("members").child(userId).getValue(Boolean.class);
-                    if (isMember != null && isMember) {
-                        String tourItemId = snapshot.child("tourItemId").getValue(String.class);
-                        if (tourItemId != null) {
-                            tourItemIds.add(tourItemId); // 收集符合條件的 tourItemId
+                    if (snapshot.getValue(Boolean.class)) {
+                        String itemId = snapshot.getKey(); // 獲取關注的項目 ID
+                        Log.d("FollowActivityFragment", "已關注的活動: " + itemId);
+                        if (itemId != null) {
+                            getRecommendedEvents(itemId); // 收集符合條件的 tourItemId
                         }
                     }
-                }
-                // 根據所有符合的 tourItemId 獲取對應的 Items
-                for (String tourItemId : tourItemIds) {
-                    getRecommendedEvents(tourItemId);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("Firebase", "Error fetching chatrooms", databaseError.toException());
+                Log.e("Firebase", "Error fetching user follows", databaseError.toException());
             }
         });
     }
