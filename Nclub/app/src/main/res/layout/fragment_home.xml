@@ -61,7 +61,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/accountimg"
+                    android:src="@drawable/mej"
                     app:shapeAppearanceOverlay="@style/CircleImageViewStyle" />
 
                 <ImageView
@@ -194,7 +194,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="活動"
+                    android:text="推薦活動"
                     android:textSize="16sp"
                     android:textColor="@color/darkblue"
                     android:textStyle="bold" />
@@ -237,7 +237,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="推薦活動"
+                    android:text="熱門活動"
                     android:textSize="16sp"
                     android:textColor="@color/darkblue"
                     android:textStyle="bold" />

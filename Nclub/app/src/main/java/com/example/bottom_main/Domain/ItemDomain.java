@@ -1,5 +1,7 @@
 package com.example.bottom_main.Domain;
 
+import com.example.bottom_main.SearchResultsActivity;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -19,6 +21,13 @@ public class ItemDomain implements Serializable {
     private ArrayList<String> tags; // 標籤
     private int price;             // 價格
     private double score;          // 評分
+    private String itemId;
+    private String userId;
+    private String startDateTour;
+    private String endDateTour;
+    private String startTimeTour;
+    private String endTimeTour;
+
 
     // Getter 和 Setter 方法
     public String getTitle() {
@@ -125,7 +134,44 @@ public class ItemDomain implements Serializable {
         this.score = score; // Set the score
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public String getUserId() {
+        return userId; // Return the itemId
+    }
+
+    public String getItemId() {
+        return itemId; // Return the itemId
+    }
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
     public ItemDomain() {
         // 預設建構子
+    }
+
+    public void setStartDateTour(String startDateTour) {this.startDateTour = startDateTour;
+    }
+    public String getStartDateTour() {
+        return startDateTour; // Return the itemId
+    }
+
+    public void setEndDateTour(String endDateTour) {this.endDateTour = endDateTour;
+    }
+    public String getEndDateTour() {
+        return endDateTour; // Return the itemId
+    }
+
+    public void setStartTimeTour(String startTimeTour) {this.startTimeTour = startTimeTour;
+    }
+    public String getStartTimeTour() {
+        return startTimeTour; // Return the itemId
+    }
+
+    public void setEndTimeTour(String endTimeTour) {this.endTimeTour = endTimeTour;
+    }
+    public String getEndTimeTour() {
+        return endTimeTour; // Return the itemId
     }
 }

@@ -65,7 +65,7 @@ public class AccountFragment extends Fragment {
         initActivitylistFunctionality(); // 11.15初始化活動列表功能
         initHostActivityFunctionality(); // 11.16初始化我主辦的活動功能
         initLogoutFunctionality(); // 初始化登出功能
-
+        initFollowActivityFunctionality();
         return view;
     }
 
@@ -126,15 +126,20 @@ public class AccountFragment extends Fragment {
     private void initActivitylistFunctionality(){
         ImageView Actlist = binding.imageView5;
         Actlist.setOnClickListener(new View.OnClickListener() {
-        @Override
+            @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Activitylist.class);
-                startActivity(intent); // 跳轉至 Activitylist
+                if (userId != null) { // 確保 userId 不為空
+                    Intent intent = new Intent(getActivity(), Activitylist.class);
+                    intent.putExtra("userId", userId); // 傳遞 userId
+                    startActivity(intent); // 跳轉至 Activitylist
+                } else {
+                    Toast.makeText(getActivity(), "用戶 ID 未獲取", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    //初始化活動列表功能
+    //初始化我主辦的活動列表功能
     private void initHostActivityFunctionality(){
         ImageView Actlist = binding.imageView11;
         Actlist.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +166,17 @@ public class AccountFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent); // 跳轉至 LoginActivity
+            }
+        });
+    }
+    private void initFollowActivityFunctionality() {
+        // 設定通知按鈕的點擊事件
+        ImageView follow = binding.imageView9; // 假設你在布局中有一個 ID 為 imageView 的 ImageView
+        follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), FollowActivity.class);
+                startActivity(intent); // 跳轉至 FollowActivity
             }
         });
     }

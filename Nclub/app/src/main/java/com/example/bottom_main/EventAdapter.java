@@ -60,6 +60,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 // 創建跳轉到活動細節頁面的 Intent
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra("eventId", event.getId()); // 假設 Event 類別中有 getId() 方法來取得活動的 ID
+                intent.putExtra("userId", event.getUserId());
                 context.startActivity(intent);
             }
         });

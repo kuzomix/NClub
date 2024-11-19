@@ -16,38 +16,48 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Activitylist extends AppCompatActivity {
 
-    private String userId; // 從上一個 Activity 或 Fragment 傳遞過來的用戶 ID
-    private RecyclerView recyclerView;
+    private String userId; // 從上個介面傳遞的 userId
+    private RecyclerView activityRecyclerView;
     private ActivityListAdapter adapter;
-    private ArrayList<String> activityTitles;
+    private List<String> activityTitles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activitylist);
 
-        // 獲取從上一個介面傳遞的用戶 ID
+        // 接收從 Intent 傳遞的 userId
         userId = getIntent().getStringExtra("userId");
+        if (userId == null) {
+            Toast.makeText(this, "未接收到用戶 ID，無法加載活動列表", Toast.LENGTH_SHORT).show();
+            finish(); // 若未傳遞 userId，直接結束 Activity
+            return;
+        }
 
-        recyclerView = findViewById(R.id.activityRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // 初始化 RecyclerView
+        activityRecyclerView = findViewById(R.id.activityRecyclerView);
+        activityRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // 初始化活動列表和適配器
         activityTitles = new ArrayList<>();
-
-        // 初始化適配器
         adapter = new ActivityListAdapter(this, activityTitles, position -> {
             String selectedActivity = activityTitles.get(position);
-            Toast.makeText(Activitylist.this, "Selected: " + selectedActivity, Toast.LENGTH_SHORT).show();
+            Toast.makeText(Activitylist.this, "選擇的活動: " + selectedActivity, Toast.LENGTH_SHORT).show();
         });
 
-        recyclerView.setAdapter(adapter);
+        activityRecyclerView.setAdapter(adapter);
 
         // 加載用戶參加的活動
         loadUserActivities();
     }
 
+    /**
+     * 從 Firebase 加載用戶參加的活動列表
+     */
     private void loadUserActivities() {
         DatabaseReference chatroomsRef = FirebaseDatabase.getInstance().getReference("chatrooms");
         chatroomsRef.orderByChild("members/" + userId).equalTo(true)
@@ -57,9 +67,8 @@ public class Activitylist extends AppCompatActivity {
                         activityTitles.clear(); // 清空舊資料
                         for (DataSnapshot chatroomSnapshot : dataSnapshot.getChildren()) {
                             String tourItemId = chatroomSnapshot.child("tourItemId").getValue(String.class);
-
                             if (tourItemId != null) {
-                                // 查詢活動資訊
+                                // 根據 tourItemId 加載對應的活動資訊
                                 loadActivityDetails(tourItemId);
                             }
                         }
@@ -67,11 +76,16 @@ public class Activitylist extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(Activitylist.this, "無法加載用戶活動", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Activitylist.this, "無法加載活動資訊", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    /**
+     * 根據 tourItemId 加載活動詳細資訊
+     *
+     * @param tourItemId 活動 ID
+     */
     private void loadActivityDetails(String tourItemId) {
         DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference("Items").child(tourItemId);
         itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -79,8 +93,8 @@ public class Activitylist extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
                 String activityTitle = itemSnapshot.child("title").getValue(String.class);
                 if (activityTitle != null) {
-                    activityTitles.add(activityTitle); // 添加活動標題
-                    adapter.notifyDataSetChanged(); // 更新 ListView
+                    activityTitles.add(activityTitle); // 添加活動標題到列表
+                    adapter.notifyDataSetChanged(); // 更新 RecyclerView
                 }
             }
 

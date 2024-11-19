@@ -51,7 +51,7 @@
                         app:srcCompat="@drawable/back_main" />
 
                     <ImageView
-                        android:id="@+id/imageView8"
+                        android:id="@+id/follow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
@@ -161,8 +161,8 @@
                                     android:id="@+id/durationTxt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="16dp"
-                                    android:text="-year"
+                                    android:layout_marginTop="25dp"
+                                    android:text="StartDay"
                                     android:textColor="@color/darkblue"
                                     android:textStyle="bold"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -170,27 +170,41 @@
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
 
-                                <ImageView
-                                    android:id="@+id/imageView101"
+                                <TextView
+                                    android:id="@+id/durationTxt2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="4dp"
-                                    app:layout_constraintBottom_toBottomOf="@+id/durationTxt"
-                                    app:layout_constraintEnd_toStartOf="@+id/durationTxt"
-                                    app:layout_constraintTop_toTopOf="@+id/durationTxt"
-                                    app:layout_constraintVertical_bias="0.526"
-                                    app:srcCompat="@drawable/hourglass" />
+                                    android:layout_marginTop="50dp"
+                                    android:text="EndDay"
+                                    android:textColor="@color/darkblue"
+                                    android:textStyle="bold"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.69"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <!--                                <ImageView-->
+                                <!--                                    android:id="@+id/imageView101"-->
+                                <!--                                    android:layout_width="wrap_content"-->
+                                <!--                                    android:layout_height="wrap_content"-->
+                                <!--                                    android:layout_marginEnd="4dp"-->
+                                <!--                                    app:layout_constraintBottom_toBottomOf="@+id/durationTxt"-->
+                                <!--                                    app:layout_constraintEnd_toStartOf="@+id/durationTxt"-->
+                                <!--                                    app:layout_constraintTop_toTopOf="@+id/durationTxt"-->
+                                <!--                                    app:layout_constraintVertical_bias="0.526"-->
+                                <!--                                    app:srcCompat="@drawable/hourglass" />-->
 
                                 <TextView
 
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="8dp"
-                                    android:text="時間"
+                                    android:text="活動日期"
                                     android:textColor="@color/darkblue"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/imageView101" />
+                                    tools:ignore="MissingConstraints" />
+                                <!--                                    app:layout_constraintTop_toBottomOf="@+id/imageView101" />-->
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -210,8 +224,8 @@
                                     android:id="@+id/distanceTxt"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="16dp"
-                                    android:text="0"
+                                    android:layout_marginTop="25dp"
+                                    android:text="StartTime"
                                     android:textColor="@color/darkblue"
                                     android:textStyle="bold"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -219,18 +233,31 @@
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
 
-                                <ImageView
-                                    android:id="@+id/imageView102"
-                                    android:layout_width="29dp"
-                                    android:layout_height="32dp"
-                                    android:layout_marginEnd="16dp"
-                                    app:layout_constraintBottom_toBottomOf="@+id/distanceTxt"
-                                    app:layout_constraintEnd_toStartOf="@+id/distanceTxt"
-                                    app:layout_constraintHorizontal_bias="0.761"
+                                <TextView
+                                    android:id="@+id/distanceTxt2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="50dp"
+                                    android:text="EndTime"
+                                    android:textColor="@color/darkblue"
+                                    android:textStyle="bold"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.804"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/distanceTxt"
-                                    app:layout_constraintVertical_bias="0.307"
-                                    app:srcCompat="@drawable/distance" />
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <!--                                <ImageView-->
+                                <!--                                    android:id="@+id/imageView102"-->
+                                <!--                                    android:layout_width="29dp"-->
+                                <!--                                    android:layout_height="32dp"-->
+                                <!--                                    android:layout_marginEnd="16dp"-->
+                                <!--                                    app:layout_constraintBottom_toBottomOf="@+id/distanceTxt"-->
+                                <!--                                    app:layout_constraintEnd_toStartOf="@+id/distanceTxt"-->
+                                <!--                                    app:layout_constraintHorizontal_bias="0.761"-->
+                                <!--                                    app:layout_constraintStart_toStartOf="parent"-->
+                                <!--                                    app:layout_constraintTop_toTopOf="@+id/distanceTxt"-->
+                                <!--                                    app:layout_constraintVertical_bias="0.307"-->
+                                <!--                                    app:srcCompat="@drawable/distance" />-->
 
                                 <TextView
 
@@ -238,12 +265,12 @@
                                     android:layout_height="wrap_content"
                                     android:layout_margin="8dp"
                                     android:layout_marginTop="8dp"
-                                    android:text="距離"
+                                    android:text="活動時間"
                                     android:textColor="@color/darkblue"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_bias="0.37"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/imageView102" />
+                                    app:layout_constraintStart_toStartOf="parent"/>
+                                <!--                                    app:layout_constraintTop_toBottomOf="@+id/imageView102" />-->
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
