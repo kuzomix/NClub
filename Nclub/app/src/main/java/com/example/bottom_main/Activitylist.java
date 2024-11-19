@@ -39,8 +39,8 @@ public class Activitylist extends AppCompatActivity {
         }
 
         // 初始化 RecyclerView
-        activityRecyclerView = findViewById(R.id.activityRecyclerView);
-        activityRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        activityRecyclerView = findViewById(R.id.activityRecyclerView);
+//        activityRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 初始化活動列表和適配器
         activityTitles = new ArrayList<>();

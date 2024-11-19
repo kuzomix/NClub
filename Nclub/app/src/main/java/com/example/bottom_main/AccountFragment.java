@@ -126,15 +126,24 @@ public class AccountFragment extends Fragment {
     private void initActivitylistFunctionality(){
         ImageView Actlist = binding.imageView5;
         Actlist.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (userId != null) { // 確保 userId 不為空
+//                    Intent intent = new Intent(getActivity(), Activitylist.class);
+//                    intent.putExtra("userId", userId); // 傳遞 userId
+//                    startActivity(intent); // 跳轉至 Activitylist
+//                } else {
+//                    Toast.makeText(getActivity(), "用戶 ID 未獲取", Toast.LENGTH_SHORT).show();
+//                }
+//            }
             @Override
             public void onClick(View view) {
-                if (userId != null) { // 確保 userId 不為空
-                    Intent intent = new Intent(getActivity(), Activitylist.class);
-                    intent.putExtra("userId", userId); // 傳遞 userId
-                    startActivity(intent); // 跳轉至 Activitylist
-                } else {
-                    Toast.makeText(getActivity(), "用戶 ID 未獲取", Toast.LENGTH_SHORT).show();
-                }
+                // 使用片段事務來替換當前片段
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                ActivityListFragment fragment = new ActivityListFragment(userId);
+                transaction.replace(R.id.frame_layout, fragment); // 確保 fragment_container 是你的容器 ID
+                transaction.addToBackStack(null); // 可選：將此事務添加到返回堆疊
+                transaction.commit(); // 提交事務
             }
         });
     }
