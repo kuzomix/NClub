@@ -326,12 +326,24 @@ public class HomeFragment extends Fragment {
             }
         });
 
+//        TextView seeAllTextView = binding.textView6; // 確保 ID 與佈局中的 TextView 匹配
+//        seeAllTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), SeeAllRecommended.class);
+//                startActivity(intent); // 開啟 SeeAllRecommended 活動
+//            }
+//        });
         TextView seeAllTextView = binding.textView6; // 確保 ID 與佈局中的 TextView 匹配
         seeAllTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SeeAllRecommended.class);
-                startActivity(intent); // 開啟 SeeAllRecommended 活動
+                // 使用片段事務來替換當前片段
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                SeeAllRecommendedFragment fragment = new SeeAllRecommendedFragment(userId);
+                transaction.replace(R.id.frame_layout, fragment); // 確保 fragment_container 是你的容器 ID
+                transaction.addToBackStack(null); // 可選：將此事務添加到返回堆疊
+                transaction.commit(); // 提交事務
             }
         });
     }
