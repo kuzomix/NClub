@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,8 +104,6 @@ public class CalendarWeekViewActivity extends AppCompatActivity implements Calen
         CalendarEventAdapter eventAdapter = new CalendarEventAdapter(getApplicationContext(), dailyEvents);
         eventListView.setAdapter(eventAdapter);
     }
-
-
     public void loadChatrooms() {
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://nclub-a408e-default-rtdb.firebaseio.com/");
         DatabaseReference chatroomsRef = database.getReference("chatrooms");
@@ -119,34 +118,57 @@ public class CalendarWeekViewActivity extends AppCompatActivity implements Calen
                 eventsMap.clear(); // 清空事件 Map
                 chatroomTitles.clear(); // 清空標題清單
 
-                List<Event> events = new ArrayList<>();
                 for (DataSnapshot chatroomSnapshot : snapshot.getChildren()) {
-                    Event event = chatroomSnapshot.getValue(Event.class);
-                    if (event != null) {
+                    // 檢查 members 節點
+                    DataSnapshot membersSnapshot = chatroomSnapshot.child("members");
+                    boolean hasTrueUser = false;
+
+                    for (DataSnapshot member : membersSnapshot.getChildren()) {
+                        Boolean isTrue = member.getValue(Boolean.class);
+                        if (Boolean.TRUE.equals(isTrue)) {
+                            hasTrueUser = true;
+                            break;
+                        }
+                    }
+
+                    // 如果有至少一個 user 為 true，繼續抓取其他資料
+                    if (hasTrueUser) {
+                        String startDateTour = chatroomSnapshot.child("startDateTour").getValue(String.class);
+                        String startTimeTour = chatroomSnapshot.child("startTimeTour").getValue(String.class);
                         String tourItemId = chatroomSnapshot.child("tourItemId").getValue(String.class);
-                        if (tourItemId != null) {
-                            events.add(event); // 暫存事件
 
-                            // 查詢對應的 title
-                            itemsRef.child(tourItemId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
-                                    String title = itemSnapshot.child("title").getValue(String.class);
-                                    if (title != null) {
-                                        // 更新事件的 title 並存儲
-                                        event.setTitle(title);
-                                        LocalDate eventDate = LocalDate.parse(event.getStartDateTour(), formatter);
-                                        eventsMap.computeIfAbsent(eventDate, k -> new ArrayList<>()).add(event);
-                                        chatroomTitles.add(title);
-                                        setWeekView(); // 更新 UI
+                        if (startDateTour != null && startTimeTour != null && tourItemId != null) {
+                            try {
+                                LocalDate eventDate = LocalDate.parse(startDateTour, formatter);
+                                Event event = new Event();
+                                event.setStartDateTour(startDateTour);
+                                event.setStartTimeTour(startTimeTour);
+
+                                // 查詢 title 並更新事件
+                                itemsRef.child(tourItemId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
+                                        String title = itemSnapshot.child("title").getValue(String.class);
+                                        if (title != null) {
+                                            event.setTitle(title);
+
+                                            // 更新事件資料
+                                            eventsMap.computeIfAbsent(eventDate, k -> new ArrayList<>()).add(event);
+                                            chatroomTitles.add(title);
+                                            setWeekView(); // 更新 UI
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Log.e("Firebase", "Error loading title: " + error.getMessage());
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Log.e("Firebase", "Error loading title: " + error.getMessage());
+                                    }
+                                });
+                            } catch (Exception e) {
+                                Log.e("CalendarWeekView", "日期解析失敗: " + startDateTour, e);
+                            }
+                        } else {
+                            Log.e("Firebase", "資料缺失: startDateTour 或 tourItemId 為 null");
                         }
                     }
                 }

@@ -71,6 +71,7 @@ public class SeeAllPopularFragment extends Fragment {
                     String title = snapshot.child("title").getValue(String.class);
                     String imageUrl = snapshot.child("pic").getValue(String.class);
                     String description = snapshot.child("description").getValue(String.class);
+                    String userId = snapshot.child("userId").getValue(String.class);
                     boolean popularFlag = snapshot.child("popularFlag").getValue(Boolean.class);
 
                     if (title != null && imageUrl != null && description != null && popularFlag) {

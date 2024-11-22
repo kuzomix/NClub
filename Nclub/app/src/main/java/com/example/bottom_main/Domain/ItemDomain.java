@@ -29,6 +29,7 @@ public class ItemDomain implements Serializable {
     private String endTimeTour;
 
 
+
     // Getter 和 Setter 方法
     public String getTitle() {
         return title;
@@ -69,11 +70,11 @@ public class ItemDomain implements Serializable {
     public void setBed(int bed) {
         this.bed = bed;
     }
-
+    @SuppressWarnings("unused")
     public String getCategory() {
         return category;
     }
-
+    @SuppressWarnings("unused")
     public void setCategory(String category) {
         this.category = category;
     }
@@ -97,7 +98,7 @@ public class ItemDomain implements Serializable {
     public boolean isPopularFlag() {
         return popularFlag;
     }
-
+    @SuppressWarnings("unused")
     public void setPopularFlag(boolean popularFlag) {
         this.popularFlag = popularFlag;
     }
@@ -105,7 +106,7 @@ public class ItemDomain implements Serializable {
     public boolean isRecommendFlag() {
         return recommendFlag;
     }
-
+    @SuppressWarnings("unused")
     public void setRecommendFlag(boolean recommendFlag) {
         this.recommendFlag = recommendFlag;
     }
