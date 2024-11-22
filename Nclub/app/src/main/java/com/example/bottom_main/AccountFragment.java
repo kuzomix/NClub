@@ -182,10 +182,19 @@ public class AccountFragment extends Fragment {
         // 設定通知按鈕的點擊事件
         ImageView follow = binding.imageView9; // 假設你在布局中有一個 ID 為 imageView 的 ImageView
         follow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), FollowActivity.class);
+//                startActivity(intent); // 跳轉至 FollowActivity
+//            }
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), FollowActivity.class);
-                startActivity(intent); // 跳轉至 FollowActivity
+                // 使用片段事務來替換當前片段
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                FollowActivityFragment fragment = new FollowActivityFragment(userId);
+                transaction.replace(R.id.frame_layout, fragment); // 確保 fragment_container 是你的容器 ID
+                transaction.addToBackStack(null); // 可選：將此事務添加到返回堆疊
+                transaction.commit(); // 提交事務
             }
         });
     }

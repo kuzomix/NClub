@@ -77,7 +77,7 @@ public class SeeAllRecommendedFragment extends Fragment {
                     boolean recommendFlag = snapshot.child("recommendFlag").getValue(Boolean.class);
 
                     if (title != null && imageUrl != null && description != null && recommendFlag) {
-                        Event event = new Event(id, title, imageUrl, description, description);
+                        Event event = new Event(id, title, imageUrl, description, userId);
                         recommendedEvents.add(event);
                         Log.d("Firebase", "Loaded event: " + recommendedEvents.size());
                     }
