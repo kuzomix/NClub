@@ -42,7 +42,7 @@ public class CategoryEventsAdapter extends RecyclerView.Adapter<CategoryEventsAd
 
         Glide.with(context)
                 .load(item.getPic())
-                .placeholder(new ColorDrawable(ContextCompat.getColor(context, R.color.placeholder_color))) // Use the defined color
+                .placeholder(new ColorDrawable(ContextCompat.getColor(context, R.color.gray))) // Use the defined color
                 .into(holder.imageView);
     }
 

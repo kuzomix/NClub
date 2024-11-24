@@ -149,13 +149,26 @@ public class AccountFragment extends Fragment {
     }
 
     //初始化我主辦的活動列表功能
-    private void initHostActivityFunctionality(){
+    private void initHostActivityFunctionality() {
         ImageView Actlist = binding.imageView11;
         Actlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Activitylist.class);
-                startActivity(intent); // 跳轉至 Activitylist
+                if (userId != null) {
+                    // 傳遞 userId 進入 HostActivityFragment
+                    Bundle bundle = new Bundle();
+                    bundle.putString("userId", userId);
+                    HostActivityFragment hostActivityFragment = new HostActivityFragment();
+                    hostActivityFragment.setArguments(bundle);
+
+                    // 加載 HostActivityFragment
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame_layout, hostActivityFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Toast.makeText(getActivity(), "用戶 ID 未獲取", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -182,19 +195,10 @@ public class AccountFragment extends Fragment {
         // 設定通知按鈕的點擊事件
         ImageView follow = binding.imageView9; // 假設你在布局中有一個 ID 為 imageView 的 ImageView
         follow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), FollowActivity.class);
-//                startActivity(intent); // 跳轉至 FollowActivity
-//            }
             @Override
             public void onClick(View view) {
-                // 使用片段事務來替換當前片段
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                FollowActivityFragment fragment = new FollowActivityFragment(userId);
-                transaction.replace(R.id.frame_layout, fragment); // 確保 fragment_container 是你的容器 ID
-                transaction.addToBackStack(null); // 可選：將此事務添加到返回堆疊
-                transaction.commit(); // 提交事務
+                Intent intent = new Intent(getActivity(), FollowActivity.class);
+                startActivity(intent); // 跳轉至 FollowActivity
             }
         });
     }
