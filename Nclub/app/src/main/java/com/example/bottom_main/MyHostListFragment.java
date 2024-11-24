@@ -39,7 +39,7 @@ public class MyHostListFragment extends Fragment {
         registeredUsers = Arrays.asList("User 1", "User 2", "User 3");
 
         // 初始化 RecyclerView
-        recyclerView = rootView.findViewById(R.id.hostRecyclerView);
+        recyclerView = rootView.findViewById(R.id.hostRecyclerView1);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // 設置適配器
